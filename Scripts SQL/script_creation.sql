@@ -12,6 +12,7 @@ USE Prog3A25_AntoineTommy;
 
 CREATE TABLE Question (
 	noQuestion		INT				NOT NULL		PRIMARY KEY		IDENTITY(1, 1),
+	titre			VARCHAR(50)		NOT NULL,
 	question		VARCHAR(1000)	NOT NULL,
 	noUtilisateur	INT				NULL
 );
@@ -40,7 +41,7 @@ CREATE TABLE Adresse (
 	nomRue			VARCHAR(100)	NOT NULL,
 	noCivique		SMALLINT		NOT NULL,
 	codePostal		VARCHAR(6)		NULL,
-	Ville			VARCHAR(100)	NOT NULL
+	ville			VARCHAR(100)	NOT NULL
 );
 
 CREATE TABLE Wiki (
