@@ -11,74 +11,74 @@ CREATE DATABASE Prog3A25_AntoineTommy;
 USE Prog3A25_AntoineTommy;
 
 CREATE TABLE Question (
-	noQuestion		INT				PRIMARY KEY		IDENTITY(1, 1),
-	question		VARCHAR(1000),
-	noUtilisateur	INT
+	noQuestion		INT				NOT NULL		PRIMARY KEY		IDENTITY(1, 1),
+	question		VARCHAR(1000)	NOT NULL,
+	noUtilisateur	INT				NULL
 );
 
 CREATE TABLE Reponse (
-	noReponse		INT				PRIMARY KEY		IDENTITY(1, 1),
-	reponse			VARCHAR(1000),
-	noUtilisateur	INT,
-	noQuestion		INT
+	noReponse		INT				NOT NULL		PRIMARY KEY		IDENTITY(1, 1),
+	reponse			VARCHAR(1000)	NOT NULL,
+	noUtilisateur	INT				NULL,
+	noQuestion		INT				NOT NULL
 );
 
 CREATE TABLE LikesQuestion (
-	noUtilisateur	INT,
-	noQuestion		INT,
+	noUtilisateur	INT				NOT NULL,
+	noQuestion		INT				NOT NULL,
 	PRIMARY KEY (noUtilisateur, noQuestion)
 );
 
 CREATE TABLE LikesReponse (
-	noUtilisateur	INT,
-	noReponse		INT,
+	noUtilisateur	INT				NOT NULL,
+	noReponse		INT				NOT NULL,
 	PRIMARY KEY (noUtilisateur, noReponse)
 );
 
 CREATE TABLE Adresse (
-	noAdresse		INT				PRIMARY KEY		IDENTITY(1, 1),
-	nomRue			VARCHAR(100),
-	noCivique		SMALLINT,
-	codePostal		VARCHAR(6),
-	Ville			VARCHAR(100)
+	noAdresse		INT				NOT NULL		PRIMARY KEY		IDENTITY(1, 1),
+	nomRue			VARCHAR(100)	NOT NULL,
+	noCivique		SMALLINT		NOT NULL,
+	codePostal		VARCHAR(6)		NULL,
+	Ville			VARCHAR(100)	NOT NULL
 );
 
 CREATE TABLE Wiki (
-	noWiki			INT				PRIMARY KEY		IDENTITY(1, 1),
-	imagePlante		VARCHAR(50),
-	info			VARCHAR	(1000),
-	minHumidite		DECIMAL(3, 1),
-	maxHumidite		DECIMAL(3, 1),
-	minTemperature	DECIMAL(3, 1),
-	maxTemperature	DECIMAL(3, 1),
-	minRayonsUV		DECIMAL(3, 1),
-	maxRayonsUV		DECIMAL(3, 1)
+	noWiki			INT				NOT NULL		PRIMARY KEY		IDENTITY(1, 1),
+	imagePlante		VARCHAR(50)		NOT NULL,
+	info			VARCHAR	(1000)	NOT NULL,
+	minHumidite		DECIMAL(3, 1)	NOT NULL,
+	maxHumidite		DECIMAL(3, 1)	NOT NULL,
+	minTemperature	DECIMAL(3, 1)	NOT NULL,
+	maxTemperature	DECIMAL(3, 1)	NOT NULL,
+	minRayonsUV		DECIMAL(3, 1)	NOT NULL,
+	maxRayonsUV		DECIMAL(3, 1)	NOT NULL
 );
 
 CREATE TABLE Plante (
-	noPlante		INT				PRIMARY KEY		IDENTITY(1, 1),
-	nom				VARCHAR(100),
-	noWiki			INT,
-	alerte			BIT
+	noPlante		INT				NOT NULL		PRIMARY KEY		IDENTITY(1, 1),
+	nom				VARCHAR(100)	NOT NULL,
+	noWiki			INT				NULL,
+	alerte			BIT				NOT NULL
 );
 
 CREATE TABLE Donnee (
-	noDonnee		INT				PRIMARY KEY		IDENTITY(1, 1),
-	dateHeure		DATETIME,
-	temperature		DECIMAL(3, 1),
-	humidite		DECIMAL(3, 1),
-	rayonsUV		DECIMAL(3, 1),
-	noPlante		INT
+	noDonnee		INT				NOT NULL		PRIMARY KEY		IDENTITY(1, 1),
+	dateHeure		DATETIME		NOT NULL,
+	temperature		DECIMAL(3, 1)	NOT NULL,
+	humidite		DECIMAL(3, 1)	NOT NULL,
+	rayonsUV		DECIMAL(3, 1)	NOT NULL,
+	noPlante		INT				NOT NULL
 );
 
 CREATE TABLE Utilisateur (
-	noUtilisateur	INT				PRIMARY KEY		IDENTITY(1, 1),
-	motPasse		VARCHAR(100),
-	nom				VARCHAR(100),
-	email			VARCHAR(100),
-	noAdresse		INT,
-	noPlante		INT,
-	administrateur	BIT
+	noUtilisateur	INT				NOT NULL		PRIMARY KEY		IDENTITY(1, 1),
+	motPasse		VARCHAR(100)	NOT NULL,
+	nom				VARCHAR(100)	NOT NULL,
+	email			VARCHAR(100)	NOT NULL,
+	noAdresse		INT				NULL,
+	noPlante		INT				NULL,
+	administrateur	BIT				NOT NULL
 );
 
 
