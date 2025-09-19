@@ -46,14 +46,14 @@ CREATE TABLE Adresse (
 
 CREATE TABLE Wiki (
 	noWiki			INT				NOT NULL		PRIMARY KEY		IDENTITY(1, 1),
-	imagePlante		VARCHAR(50)		NOT NULL,
-	info			VARCHAR	(1000)	NOT NULL,
-	minHumidite		DECIMAL(3, 1)	NOT NULL,
-	maxHumidite		DECIMAL(3, 1)	NOT NULL,
-	minTemperature	DECIMAL(3, 1)	NOT NULL,
-	maxTemperature	DECIMAL(3, 1)	NOT NULL,
-	minRayonsUV		DECIMAL(3, 1)	NOT NULL,
-	maxRayonsUV		DECIMAL(3, 1)	NOT NULL
+	imagePlante		VARCHAR(100)		NULL,
+	info			VARCHAR(1000)	NOT NULL,
+	minHumidite		DECIMAL(4, 1)	NOT NULL,
+	maxHumidite		DECIMAL(4, 1)	NOT NULL,
+	minTemperature	DECIMAL(4, 1)	NOT NULL,
+	maxTemperature	DECIMAL(4, 1)	NOT NULL,
+	minRayonsUV		DECIMAL(4, 1)	NOT NULL,
+	maxRayonsUV		DECIMAL(4, 1)	NOT NULL
 );
 
 CREATE TABLE Plante (
@@ -66,9 +66,9 @@ CREATE TABLE Plante (
 CREATE TABLE Donnee (
 	noDonnee		INT				NOT NULL		PRIMARY KEY		IDENTITY(1, 1),
 	dateHeure		DATETIME		NOT NULL,
-	temperature		DECIMAL(3, 1)	NOT NULL,
-	humidite		DECIMAL(3, 1)	NOT NULL,
-	rayonsUV		DECIMAL(3, 1)	NOT NULL,
+	temperature		DECIMAL(4, 1)	NOT NULL,
+	humidite		DECIMAL(4, 1)	NOT NULL,
+	rayonsUV		DECIMAL(4, 1)	NOT NULL,
 	noPlante		INT				NOT NULL
 );
 
