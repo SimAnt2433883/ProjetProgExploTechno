@@ -38,13 +38,13 @@ INSERT INTO Adresse (nomRue, noCivique, codePostal, ville) VALUES
 ('Boulevard Taschereau', 4125, 'J4V2H9', 'Longueuil'),
 ('Avenue Cartier', 150, 'G1R2S8', 'Québec');
 
-INSERT INTO Utilisateur (motPasse, nom, email, noAdresse, noPlante, administrateur) VALUES
-('mdpFicus123', 'Alice Tremblay', 'alice.tremblay@example.com', 1, 1, 0),
-('mdpCactus456', 'Marc Dubois', 'marc.dubois@example.com', 2, 2, 0),
-('orchidee789', 'Sophie Gagnon', 'sophie.gagnon@example.com', 3, 3, 0),
-('basilic321', 'Jean Fortin', 'jean.fortin@example.com', 4, 4, 0),
-('lavande654', 'Émilie Roy', 'emilie.roy@example.com', 5, 5, 0),
-('admin123', 'Admin Principal', 'admin@example.com', 6, NULL, 1);
+INSERT INTO Utilisateur (motPasse, nom, email, noAdresse, noPlante, administrateur, sel) VALUES
+('mdpFicus123', 'Alice Tremblay', 'alice.tremblay@example.com', 1, 1, 0, NEWID()),
+('mdpCactus456', 'Marc Dubois', 'marc.dubois@example.com', 2, 2, 0, NEWID()),
+('orchidee789', 'Sophie Gagnon', 'sophie.gagnon@example.com', 3, 3, 0, NEWID()),
+('basilic321', 'Jean Fortin', 'jean.fortin@example.com', 4, 4, 0, NEWID()),
+('lavande654', 'Émilie Roy', 'emilie.roy@example.com', 5, 5, 0, NEWID()),
+('admin123', 'Admin Principal', 'admin@example.com', 6, NULL, 1, NEWID());
 
 INSERT INTO Question (titre, question, noUtilisateur) VALUES
 ('Arrosage du ficus', 'Mon ficus perd ses feuilles, est-ce que je l’arrose trop souvent?', 1),
