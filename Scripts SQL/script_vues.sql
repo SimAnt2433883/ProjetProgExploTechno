@@ -106,5 +106,5 @@ GO
 /* REQUETE A FAIRE POUR AVOIR LES INFOS DANS LE BON ORDRE
 SELECT * 
 FROM VueInteractionUtilisateur
-ORDER BY noQuestion, noInteraction, titre DESC;
+ORDER BY noQuestion, titre DESC;
 */
