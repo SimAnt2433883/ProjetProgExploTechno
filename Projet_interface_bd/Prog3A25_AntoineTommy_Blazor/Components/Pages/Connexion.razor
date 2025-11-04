@@ -1,0 +1,43 @@
+﻿@page "/connexion"
+@using Models
+@using Services
+@inject LoginService loginService
+@rendermode InteractiveServer
+
+<h3>Connexion</h3>
+
+<div class="center-form">
+    <EditForm Model="@loginData" OnValidSubmit="HandleSubmit" FormName="ConnexionForm">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <label for="email">Email:</label><br>
+        <InputText id="email" @bind-Value="loginData.Email" /><br><br>
+
+        <label for="motPasse">Mot de passe:</label><br>
+        <InputText id="motPasse" type="password" @bind-Value="loginData.MotPasse" /><br><br>
+
+        <button type="submit">Envoyer</button>
+    </EditForm>
+</div>
+
+@((MarkupString)info)
+
+@code {
+    private LoginModel loginData = new();
+    private string? info;
+
+    private async Task HandleSubmit()
+    {
+        var infoUtilisateur = await loginService.VerifierConnexion(loginData.Email, loginData.MotPasse);
+        if (infoUtilisateur == null)
+            info = "<p>Erreur de connexion de l'utilisateur.</p>";
+        else
+            info = $"<table>" + 
+                        $"<tr><th>NoUtilisateur: </th><td>{infoUtilisateur.NoUtilisateur}</td></tr>" +
+                        $"<tr><th>Nom: </th><td>{infoUtilisateur.Nom}</td></tr>" +
+                        $"<tr><th>Email: </th><td>{infoUtilisateur.Email}</td></tr>" +
+                        $"<tr><th>Administrateur: </th><td>{(infoUtilisateur.Administrateur ? "Oui" : "Non")}</td></tr>" +
+                   $"</table>";
+    }
+}

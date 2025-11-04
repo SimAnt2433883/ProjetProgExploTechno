@@ -1,6 +1,5 @@
 USE Prog3A25_AntoineTommy;
-
-/*	pour hasher les mdp existants dans la bd
+/*
 ALTER TABLE Utilisateur
 ADD motPasseHash BINARY(64);
 GO
@@ -55,7 +54,8 @@ BEGIN
 			PRINT 'mauvais mdp'
 	END
 	ELSE
-		PRINT 'mauvais email';
+		-- mauvais email
+		SET @reponse = -1;
 END;
 GO
 
@@ -65,3 +65,5 @@ EXEC Connexion
 	@mdp = 'cegep', 
 	@reponse = @reponse OUTPUT;
 PRINT @reponse;
+
+SELECT * FROM VueInfoUtilisateur WHERE NoUtilisateur = 6;

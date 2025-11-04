@@ -8,6 +8,10 @@ IF OBJECT_ID('VueQuestionUtilisateur', 'V') IS NOT NULL
     DROP VIEW VueQuestionUtilisateur;
 IF OBJECT_ID('VueInfoUtilisateur', 'V') IS NOT NULL
     DROP VIEW VueInfoUtilisateur;
+IF OBJECT_ID('insert_question', 'TR') IS NOT NULL
+	DROP TRIGGER insert_question;
+IF OBJECT_ID('insert_reponse', 'TR') IS NOT NULL
+	DROP TRIGGER insert_reponse;
 
 GO
 CREATE VIEW VueInfoUtilisateur AS
@@ -18,9 +22,9 @@ SELECT Utilisateur.noUtilisateur,
 	Utilisateur.administrateur, 
 	COUNT(Question.noQuestion) AS nbQuestions
 FROM Utilisateur
-JOIN Plante
+LEFT JOIN Plante
     ON Utilisateur.noPlante = Plante.noPlante
-JOIN Question
+LEFT JOIN Question
     ON Utilisateur.noUtilisateur = Question.noUtilisateur
 GROUP BY
     Utilisateur.noUtilisateur, 
@@ -37,7 +41,7 @@ SELECT Utilisateur.noUtilisateur,
 	Utilisateur.administrateur, 
 	Question.noQuestion, 
 	Question.titre, 
-	Question.question AS Question, 
+	Question.question AS question, 
 	COUNT(LikesQuestion.noUtilisateur) AS nbLikes
 FROM Utilisateur
 JOIN Question
@@ -55,12 +59,12 @@ GROUP BY
 GO
 
 CREATE VIEW VueReponseUtilisateur AS
-SELECT Utilisateur.noUtilisateur, 
+SELECT Utilisateur.noUtilisateur,
 	Utilisateur.nom, 
 	Utilisateur.email, 
 	Utilisateur.administrateur, 
-	Reponse.noReponse, 
-	Reponse.reponse, 
+	Reponse.noReponse,
+	Reponse.reponse,
 	COUNT(LikesReponse.noUtilisateur) AS nbLikes,
 	Reponse.noQuestion
 FROM Utilisateur
@@ -76,7 +80,6 @@ GROUP BY Utilisateur.noUtilisateur,
 	Reponse.reponse,
 	Reponse.noQuestion;
 GO
-
 
 CREATE VIEW VueInteractionUtilisateur AS
 SELECT noUtilisateur, 
@@ -99,12 +102,74 @@ SELECT noUtilisateur,
 	reponse AS texte, 
 	nbLikes,
 	noQuestion
-FROM VueReponseUtilisateur
+FROM VueReponseUtilisateur;
+
+GO
+CREATE TRIGGER insert_question ON VueQuestionUtilisateur
+INSTEAD OF INSERT AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @noUtilisateur INT;
+	DECLARE @titre VARCHAR(100);
+	DECLARE @question VARCHAR(1000);
+
+	DECLARE cQuestion CURSOR FOR 
+	SELECT noUtilisateur, titre, question
+	FROM inserted;
+
+	OPEN cQuestion;
+	FETCH cQuestion INTO @noUtilisateur, @titre, @question;
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		INSERT INTO Question (noUtilisateur, titre, question) VALUES
+		(@noUtilisateur, @titre, @question);
+		FETCH cQuestion INTO @noUtilisateur, @titre, @question;
+	END;
+
+	CLOSE cQuestion;
+	DEALLOCATE cQuestion;
+	SET NOCOUNT OFF;
+END;
 GO
 
+CREATE TRIGGER insert_reponse ON VueReponseUtilisateur
+INSTEAD OF INSERT AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @noUtilisateur INT;
+	DECLARE @noQuestion INT;
+	DECLARE @reponse VARCHAR(1000);
 
-/* REQUETE A FAIRE POUR AVOIR LES INFOS DANS LE BON ORDRE
+	DECLARE cReponse CURSOR FOR 
+	SELECT noUtilisateur, noQuestion, reponse
+	FROM inserted;
+
+	OPEN cReponse;
+	FETCH cReponse INTO @noUtilisateur, @noQuestion, @reponse;
+	WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		INSERT INTO Reponse (noUtilisateur, noQuestion, reponse) VALUES
+		(@noUtilisateur, @noQuestion, @reponse);
+		FETCH cReponse INTO @noUtilisateur, @noQuestion, @reponse;
+	END;
+
+	CLOSE cReponse;
+	DEALLOCATE cReponse;
+	SET NOCOUNT OFF;
+END;
+GO
+
+INSERT INTO VueQuestionUtilisateur (noUtilisateur, titre, question) VALUES
+(5, 'Titre test question', 'Texte test question'),
+(1, 'Titre test question', 'Texte test question'),
+(4, 'Titre test question', 'Texte test question');
+
+INSERT INTO VueReponseUtilisateur (noUtilisateur, noQuestion, reponse) VALUES
+(6, 1, 'Reponse test question'),
+(6, 2, 'Reponse test question'),
+(6, 3, 'Reponse test question');
+
+-- Requete a faire pour avoir les interactions dans le bon ordre
 SELECT * 
 FROM VueInteractionUtilisateur
 ORDER BY noQuestion, titre DESC;
-*/
