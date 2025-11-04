@@ -84,5 +84,3 @@ CREATE TABLE Utilisateur (
 	administrateur	BIT					NOT NULL,
 	sel				UNIQUEIDENTIFIER	NULL
 );
-
-
