@@ -15,8 +15,10 @@ namespace Prog3A25_AntoineTommy_Blazor
         {
             var builder = WebApplication.CreateBuilder(args);
             var conStrBuilder =
-                new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("Connexion"));
-            conStrBuilder.Password = builder.Configuration["MotPasse"];
+                new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("Connexion"))
+                {
+                    Password = builder.Configuration["MotPasse"]
+                };
             builder.Services.AddPooledDbContextFactory<Prog3A25AntoineTommyProdContext>(
                 x => x.UseSqlServer(conStrBuilder.ConnectionString));
             builder.Services.AddScoped<LoginService>();
