@@ -1,11 +1,10 @@
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Prog3A25_AntoineTommy_Blazor.Components;
 using Prog3A25_AntoineTommy_Blazor.Data;
 using Prog3A25_AntoineTommy_Blazor.Services;
-
-// ajouter comme paramètre aux constructeurs de services :
-// public UserAccountService(IDbContextFactory<Prog3A25AntoineTommyProdContext> factory)
 
 namespace Prog3A25_AntoineTommy_Blazor
 {
@@ -21,7 +20,15 @@ namespace Prog3A25_AntoineTommy_Blazor
                 };
             builder.Services.AddPooledDbContextFactory<Prog3A25AntoineTommyProdContext>(
                 x => x.UseSqlServer(conStrBuilder.ConnectionString));
+
             builder.Services.AddScoped<LoginService>();
+            builder.Services.AddScoped<ProtectedSessionStorage>();
+            builder.Services.AddScoped<CustomAuthenticationStateProvider>();
+            builder.Services.AddScoped<AuthenticationStateProvider>(provider =>
+                provider.GetRequiredService<CustomAuthenticationStateProvider>());
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddCascadingAuthenticationState();
+
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();

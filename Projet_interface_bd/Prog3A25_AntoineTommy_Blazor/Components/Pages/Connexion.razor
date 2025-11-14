@@ -1,8 +1,11 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@inject LoginService loginService
+@inject CustomAuthenticationStateProvider authProvider
+@inject NavigationManager navManager
+@using Prog3A25_AntoineTommy_Blazor.Authentication
 @using Models
 @using Services
-@inject LoginService loginService
-@rendermode InteractiveServer
 
 <title>Connexion</title>
 
@@ -27,20 +30,34 @@
                 <button type="submit" class="btn btn-primary flex-fill">Se connecter</button>
             </div>
         </EditForm>
-
-        <div class="mt-4" style="overflow-x: auto;">
-            @((MarkupString)info)
-        </div>
+        @((MarkupString)info)
     </div>
 </div>
 
 @code {
     private LoginModel loginData = new();
-    private string? info;
+    private string info = "";
 
     private async Task HandleSubmit()
     {
-        info = await loginService.ConnecterUtilisateur(loginData.Email, loginData.MotPasse);
+        var utilisateur = await loginService.ConnecterUtilisateur(loginData.Email, loginData.MotPasse);
+
+
+        if (utilisateur != null)
+        {
+            // string role = loginService.GetRole(utilisateur.NoPlante, utilisateur.Administrateur);
+            await authProvider.UpdateAuthenticationState(new UserSession(
+                utilisateur.Nom,
+                utilisateur.Administrateur ? "Administrateur" : "Normal",
+                utilisateur.NoUtilisateur,
+                utilisateur.NoPlante,
+                utilisateur.Email
+            ));
+            navManager.NavigateTo("/CreationWiki");
+        }
+        else
+            info = "<p class='alert alert-danger mt-3'>Email ou mot de passe invalide</p>";
     }
+
 }
 

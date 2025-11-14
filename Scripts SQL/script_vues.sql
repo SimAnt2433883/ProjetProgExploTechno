@@ -173,3 +173,5 @@ INSERT INTO VueReponseUtilisateur (noUtilisateur, noQuestion, reponse) VALUES
 SELECT * 
 FROM VueInteractionUtilisateur
 ORDER BY noQuestion, titre DESC;
+
+SELECT * FROM Donnee

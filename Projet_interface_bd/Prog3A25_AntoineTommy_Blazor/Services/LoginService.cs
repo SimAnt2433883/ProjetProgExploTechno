@@ -6,6 +6,7 @@ using Prog3A25_AntoineTommy_Blazor.Data;
 using Prog3A25_AntoineTommy_Blazor.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Prog3A25_AntoineTommy_Blazor.Authentication;
 using System.Data;
 
 namespace Prog3A25_AntoineTommy_Blazor.Services
@@ -14,15 +15,13 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
     {
         private readonly IDbContextFactory<Prog3A25AntoineTommyProdContext> factory = factory;
 
-        public async Task<string?> ConnecterUtilisateur(string email, string motPasse)
+        public async Task<Utilisateur?> ConnecterUtilisateur(string email, string motPasse)
         {
             var db = await factory.CreateDbContextAsync();
-
             int? noUtilisateur = await ExecuterConnexion(db, email, motPasse);
-
-            Utilisateur? utilisateur = GetUtilisateur(db, noUtilisateur);
-            return GetBaliseUtilisateur(utilisateur);
+            return GetUtilisateur(db, noUtilisateur);
         }
+
 
         private static async Task<int?> ExecuterConnexion(Prog3A25AntoineTommyProdContext db, string email, string motPasse)
         {
@@ -56,20 +55,19 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
             return utilisateurRetour;
         }
 
-        private static string? GetBaliseUtilisateur(Utilisateur? utilisateur)
-        {
-            if (utilisateur == null)
-                return "<p class='text-danger fw-semibold mt-3'>Erreur de connexion de l'utilisateur.</p>";
-            else
-                return $@"<table class='table table-striped table-bordered mt-3'>" +
-                                $"<tbody>" +
-                                    $"<tr><th scope='row'>NoUtilisateur</th><td>{utilisateur.NoUtilisateur}</td></tr>" +
-                                    $"<tr><th scope='row'>Nom</th><td>{utilisateur.Nom}</td></tr>" +
-                                    $"<tr><th scope='row'>Email</th><td>{utilisateur.Email}</td></tr>" +
-                                    $"<tr><th scope='row'>Administrateur</th><td>{(utilisateur.Administrateur ? "Oui" : "Non")}</td></tr>" +
-                                $"</tbody>" +
-                            $"</table>";
-        }
+        //public static string GetRole(Utilisateur utilisateur)
+        //{
+        //    string role = "";
 
+        //    if (utilisateur.Administrateur)
+        //        role += "Administrateur";
+        //    else
+        //        role += "Normal";
+
+        //    if (utilisateur.NoPlante != null)
+        //        role += " plante";
+
+        //    return role;
+        //}
     }
 }
