@@ -1,0 +1,93 @@
+﻿@page "/CreationWiki"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Authorization
+@using Models
+@inject AuthenticationStateProvider AuthStateProvider
+
+<AuthorizeView Roles="Administrateur">
+    <Authorized>
+        <title>Création de wiki</title>
+        <div class="d-flex flex-column justify-content-center align-items-center vh-100" style="margin-top: -80px;">
+            <h1 class="mb-4">Créer un wiki</h1>
+            <div class="card shadow p-4" style="max-width: 700px; width: 100%;">
+                <EditForm Model="@creationWikiModel" OnValidSubmit="HandleSubmit" FormName="CreationWikiForm" Context="Contexte">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label for="nom" class="form-label">Nom:</label>
+                        <InputText id="nom" class="form-control" @bind-Value="creationWikiModel.Nom" placeholder="Cactus" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="lien" class="form-label">Lien de l'image:</label>
+                        <InputText id="lien" class="form-control" @bind-Value="creationWikiModel.LienImage" placeholder="https://www.lien.com" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description:</label>
+                        <InputTextArea id="description" class="form-control" @bind-Value="creationWikiModel.Description"
+                                       placeholder="Plante du désert..." rows="5" style="resize: vertical;" />
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Température:</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <InputNumber class="form-control" @bind-Value="creationWikiModel.TempMin" />
+                                <span>à</span>
+                                <InputNumber class="form-control" @bind-Value="creationWikiModel.TempMax" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Humidité:</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <InputNumber class="form-control" @bind-Value="creationWikiModel.HumiditeMin" />
+                                <span>à</span>
+                                <InputNumber class="form-control" @bind-Value="creationWikiModel.HumiditeMax" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Rayons UV:</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <InputNumber class="form-control" @bind-Value="creationWikiModel.RayonsUVMin" />
+                                <span>à</span>
+                                <InputNumber class="form-control" @bind-Value="creationWikiModel.RayonsUVMax" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="button" @onclick="ResetOnClick" class="btn btn-danger flex-fill">Réinitialiser</button>
+                        <button type="submit" class="btn btn-primary flex-fill">Créer le wiki</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <p>Désolé, vous n'avez pas accès à cette page.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private CreationWikiModel creationWikiModel = new();
+
+    private async Task HandleSubmit()
+    {
+        // Logique de création du wiki
+    }
+
+    private void ResetOnClick()
+    {
+        creationWikiModel = new();
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+    }
+}

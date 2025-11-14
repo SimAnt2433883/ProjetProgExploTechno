@@ -1,43 +1,63 @@
-﻿@page "/connexion"
+﻿@page "/"
+@rendermode InteractiveServer
+@inject LoginService loginService
+@inject CustomAuthenticationStateProvider authProvider
+@inject NavigationManager navManager
+@using Prog3A25_AntoineTommy_Blazor.Authentication
 @using Models
 @using Services
-@inject LoginService loginService
-@rendermode InteractiveServer
 
-<h3>Connexion</h3>
+<title>Connexion</title>
 
-<div class="center-form">
-    <EditForm Model="@loginData" OnValidSubmit="HandleSubmit" FormName="ConnexionForm">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+<div class="d-flex flex-column justify-content-center align-items-center vh-100" style="margin-top: -80px;">
+    <h1 class="mb-4">Connexion</h1>
+    <div class="card shadow p-4" style="min-width: 400px;">
+        <EditForm Model="@loginData" OnValidSubmit="HandleSubmit" FormName="ConnexionForm">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-        <label for="email">Email:</label><br>
-        <InputText id="email" @bind-Value="loginData.Email" /><br><br>
+            <div class="mb-3">
+                <label for="email" class="form-label">Adresse email</label>
+                <InputText id="email" class="form-control" @bind-Value="loginData.Email" placeholder="Email..." />
+            </div>
 
-        <label for="motPasse">Mot de passe:</label><br>
-        <InputText id="motPasse" type="password" @bind-Value="loginData.MotPasse" /><br><br>
-
-        <button type="submit">Envoyer</button>
-    </EditForm>
+            <div class="mb-3">
+                <label for="motPasse" class="form-label">Mot de passe</label>
+                <InputText id="motPasse" type="password" class="form-control" @bind-Value="loginData.MotPasse" placeholder="Mot de passe..." />
+            </div>
+            <div class="buttons d-flex gap-2">
+                <a href="/inscription" class="btn btn-outline-secondary flex-fill">S'inscrire</a>
+                <button type="submit" class="btn btn-primary flex-fill">Se connecter</button>
+            </div>
+        </EditForm>
+        @((MarkupString)info)
+    </div>
 </div>
-
-@((MarkupString)info)
 
 @code {
     private LoginModel loginData = new();
-    private string? info;
+    private string info = "";
 
     private async Task HandleSubmit()
     {
-        var infoUtilisateur = await loginService.VerifierConnexion(loginData.Email, loginData.MotPasse);
-        if (infoUtilisateur == null)
-            info = "<p>Erreur de connexion de l'utilisateur.</p>";
+        var utilisateur = await loginService.ConnecterUtilisateur(loginData.Email, loginData.MotPasse);
+
+
+        if (utilisateur != null)
+        {
+            // string role = loginService.GetRole(utilisateur.NoPlante, utilisateur.Administrateur);
+            await authProvider.UpdateAuthenticationState(new UserSession(
+                utilisateur.Nom,
+                utilisateur.Administrateur ? "Administrateur" : "Normal",
+                utilisateur.NoUtilisateur,
+                utilisateur.NoPlante,
+                utilisateur.Email
+            ));
+            navManager.NavigateTo("/CreationWiki");
+        }
         else
-            info = $"<table>" + 
-                        $"<tr><th>NoUtilisateur: </th><td>{infoUtilisateur.NoUtilisateur}</td></tr>" +
-                        $"<tr><th>Nom: </th><td>{infoUtilisateur.Nom}</td></tr>" +
-                        $"<tr><th>Email: </th><td>{infoUtilisateur.Email}</td></tr>" +
-                        $"<tr><th>Administrateur: </th><td>{(infoUtilisateur.Administrateur ? "Oui" : "Non")}</td></tr>" +
-                   $"</table>";
+            info = "<p class='alert alert-danger mt-3'>Email ou mot de passe invalide</p>";
     }
+
 }
+

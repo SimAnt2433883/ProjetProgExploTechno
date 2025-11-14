@@ -1,4 +1,5 @@
 USE Prog3A25_AntoineTommy;
+
 /*
 ALTER TABLE Utilisateur
 ADD motPasseHash BINARY(64);
@@ -50,8 +51,6 @@ BEGIN
 		
 		-- verifie si un noUser a ete pris et renvoie le numero correspondant
 		SET @reponse = ISNULL(@noUser, -1);
-		IF (@reponse = -1)
-			PRINT 'mauvais mdp'
 	END
 	ELSE
 		-- mauvais email
@@ -61,9 +60,9 @@ GO
 
 DECLARE @reponse INT;
 EXEC Connexion 
-	@email = 'test@test.ca', 
-	@mdp = 'cegep', 
+	@email = 'admin@example.com', 
+	@mdp = 'admin123', 
 	@reponse = @reponse OUTPUT;
 PRINT @reponse;
 
-SELECT * FROM VueInfoUtilisateur WHERE NoUtilisateur = 6;
+SELECT * FROM Donnee
