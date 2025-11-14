@@ -8,7 +8,7 @@ CREATE PROCEDURE Inscription
 	@email VARCHAR(100),
 	@motPasse VARCHAR(100),
 	@admin BIT = 0,
-	@reponse VARCHAR(100) OUTPUT
+	@reponse INT OUTPUT
 AS
 BEGIN
 	SET NOCOUNT ON
@@ -20,7 +20,7 @@ BEGIN
 	END TRY
 	BEGIN CATCH
 	-- Penser à changer @reponse par un INT qui retourne -1 et ensuite afficher le message d'erreur dans le code.
-		SET @reponse = 'Une erreur est survenue, veuillez contacter votre administrateur.';
+		SET @reponse = -1;
 	END CATCH
 END
 
