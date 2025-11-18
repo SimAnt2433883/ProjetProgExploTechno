@@ -21,6 +21,7 @@ namespace Prog3A25_AntoineTommy_Blazor
             builder.Services.AddPooledDbContextFactory<Prog3A25AntoineTommyProdContext>(
                 x => x.UseSqlServer(conStrBuilder.ConnectionString));
 
+            builder.Services.AddScoped<InscriptionService>();
             builder.Services.AddScoped<LoginService>();
             builder.Services.AddScoped<ProtectedSessionStorage>();
             builder.Services.AddScoped<CustomAuthenticationStateProvider>();

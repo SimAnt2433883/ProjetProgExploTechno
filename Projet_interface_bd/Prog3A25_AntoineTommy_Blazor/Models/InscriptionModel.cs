@@ -2,9 +2,9 @@
 {
     public class InscriptionModel
     {
-        public string Nom { get; set; } = "";
-        public string Email { get; set; } = "";
-        public string MotPasse { get; set; } = "";
+        public string? Nom { get; set; }
+        public string? Email { get; set; }
+        public string? MotPasse { get; set; }
     }
 }
 
