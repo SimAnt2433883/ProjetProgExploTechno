@@ -4,6 +4,7 @@ using Prog3A25_AntoineTommy_Blazor.Models;
 using System.Data;
 using Microsoft.Data.SqlClient;
 
+
 namespace Prog3A25_AntoineTommy_Blazor.Services
 {
     public class InscriptionService
@@ -30,20 +31,24 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
                 };
 
                 await db.Database.ExecuteSqlRawAsync(
-                    "EXEC Inscription @email, @nom, @motPasse, @reponse OUTPUT",
-                    emailParam, nomParam, mdpParam, reponseParam
+                    "EXEC Inscription @nom, @email, @motPasse, @reponse OUTPUT",
+                    nomParam, emailParam, mdpParam, reponseParam
                 );
 
-                int result = reponseParam.Value == DBNull.Value ? -1 : (int)reponseParam.Value;
+                int noUtilisateur = reponseParam.Value == DBNull.Value ? -1 : (int)reponseParam.Value;
 
-                if (result > 0)
-                {
-                    var utilisateur = await db.Utilisateurs.FirstOrDefaultAsync(u => u.NoUtilisateur == result);
-                    return utilisateur;
-                }
-                return null;
+                List<Utilisateur> utilisateurs =
+                [.. from utilisateur in db.Utilisateurs
+                    where utilisateur.NoUtilisateur == noUtilisateur
+                    select utilisateur];
+
+                Utilisateur? utilisateurRetour = null;
+                foreach (Utilisateur utilisateurConnecte in utilisateurs)
+                    utilisateurRetour = utilisateurConnecte;
+
+                return utilisateurRetour;
             }
-            catch (Exception)
+            catch
             {
                 return null;
             }

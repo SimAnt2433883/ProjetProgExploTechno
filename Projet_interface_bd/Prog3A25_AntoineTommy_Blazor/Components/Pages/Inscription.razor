@@ -1,14 +1,18 @@
 ﻿@page "/Inscription"
+@rendermode InteractiveServer
+@inject InscriptionService inscriptionService
+@inject CustomAuthenticationStateProvider authProvider
+@inject NavigationManager navManager
+@using Prog3A25_AntoineTommy_Blazor.Authentication
 @using Models
 @using Services
-@inject InscriptionService inscriptionService
 
 <title>Inscription</title>
 
 <div class="d-flex flex-column justify-content-center align-items-center vh-100" style="margin-top: -80px;">
     <h1 class="mb-4">Inscription</h1>
     <div class="card shadow p-4" style="min-width: 350px;">
-        <EditForm Model="@inscriptionModel" OnInvalidSubmit="HandleSubmit">
+        <EditForm Model="@inscriptionModel" FormName="InscriptionForm" OnValidSubmit="HandleSubmit">
             <DataAnnotationsValidator />
             <ValidationSummary />
 
@@ -22,17 +26,16 @@
             </div>
             <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
-                <input type="password" class="form-control" @bind-value="inscriptionModel.MotPasse" placeholder="Mot de passe...">
+                <InputText type="password" class="form-control" @bind-value="inscriptionModel.MotPasse" placeholder="Mot de passe..." />
             </div>
-            <button type="submit" class="btn btn-primary w-100">Soumettre</button>
+            <div class="buttons d-flex gap-2">
+                <a href="/" class="btn btn-outline-secondary flex-fill">Se connecter</a>
+                <button type="submit" class="btn btn-primary flex-fill">Soumettre</button>
+            </div>
         </EditForm>
+        @((MarkupString)message)
     </div>
 </div>
-
-@if (message is not null)
-{
-    <div class="alert alert-info mt-3">@message</div>
-}
 
 @code {
     private InscriptionModel inscriptionModel = new InscriptionModel();
@@ -40,6 +43,22 @@
 
     private async Task HandleSubmit()
     {
-        var success = await inscriptionService.InscrireUtilisateur(nom: inscriptionModel.Nom, email: inscriptionModel.Email, motPasse: inscriptionModel.MotPasse);
+        Utilisateur utilisateur = await inscriptionService.InscrireUtilisateur(inscriptionModel.Email, inscriptionModel.Nom, inscriptionModel.MotPasse);
+
+        if (utilisateur != null)
+        {
+            await authProvider.UpdateAuthenticationState(new UserSession(
+                utilisateur.Nom,
+                utilisateur.Administrateur ? "Administrateur" : "Normal",
+                utilisateur.NoUtilisateur,
+                utilisateur.NoPlante,
+                utilisateur.Email
+            ));
+            navManager.NavigateTo("/CreationWiki");
+        }
+        else
+        {
+            message = "<p class='alert alert-danger mt-3'>Information(s) manquante(s)</p>";
+        }
     }
 }
