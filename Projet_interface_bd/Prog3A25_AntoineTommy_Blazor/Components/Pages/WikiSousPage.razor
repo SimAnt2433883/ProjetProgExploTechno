@@ -17,7 +17,7 @@
         <!-- Contenu principal -->
         <div class="card shadow-lg border-0 p-4" style="max-width: 950px; margin: 0 auto;">
             <h1 class="text-center mb-4">
-                @donneesPlante?.Plantes.FirstOrDefault()?.Nom
+                @donneesPlante.Nom
             </h1>
             @if (!string.IsNullOrEmpty(donneesPlante?.ImagePlante))
             {
@@ -70,9 +70,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (!await wikiSousPageService.EstValide(id))
+        donneesPlante = await wikiSousPageService.GetWiki(id);
+        if (donneesPlante == null)
             navManager.NavigateTo("/Wiki");
-        else
-            donneesPlante = await wikiSousPageService.GetWiki(id);
     }
 }
