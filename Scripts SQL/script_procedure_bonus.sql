@@ -2,6 +2,9 @@ USE Prog3A25_AntoineTommy;
 
 IF OBJECT_ID('Verif_donnee', 'P') IS NOT NULL
 	DROP PROCEDURE Verif_donnee;
+IF OBJECT_ID('insert_wiki', 'TR') IS NOT NULL
+	DROP TRIGGER insert_wiki;
+
 
 GO
 CREATE PROCEDURE Verif_donnee 
@@ -44,7 +47,9 @@ BEGIN
 	DECLARE @noPlante INT;
 
 	DECLARE cWiki CURSOR FOR
-	SELECT noWiki FROM inserted;
+	SELECT noWiki, noPlante FROM inserted;
+
+	OPEN cWiki;
 	FETCH cWiki INTO @noWiki, @noPlante;
 	WHILE (@@FETCH_STATUS = 0)
 	BEGIN
@@ -97,6 +102,8 @@ BEGIN
 		WHERE noPlante = @noPlante;
 		FETCH cWiki INTO @noWiki, @noPlante;
 	END;
+	CLOSE cWiki;
+	DEALLOCATE cWiki;
 	SET NOCOUNT OFF;
 END;
 GO

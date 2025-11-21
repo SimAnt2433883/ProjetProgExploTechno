@@ -13,7 +13,7 @@ public partial class VueInfoUtilisateur
     public int NoUtilisateur { get; set; }
 
     [Column("noPlante")]
-    public int NoPlante { get; set; }
+    public int? NoPlante { get; set; }
 
     [Column("utilisateurNom")]
     [StringLength(100)]
@@ -23,7 +23,7 @@ public partial class VueInfoUtilisateur
     [Column("planteNom")]
     [StringLength(100)]
     [Unicode(false)]
-    public string PlanteNom { get; set; } = null!;
+    public string? PlanteNom { get; set; }
 
     [Column("administrateur")]
     public bool Administrateur { get; set; }

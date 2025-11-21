@@ -41,6 +41,10 @@ public partial class Wiki
     [Column("maxRayonsUV", TypeName = "decimal(4, 1)")]
     public decimal MaxRayonsUv { get; set; }
 
+    [StringLength(100)]
+    [Unicode(false)]
+    public string? Nom { get; set; }
+
     [InverseProperty("NoWikiNavigation")]
     public virtual ICollection<Plante> Plantes { get; set; } = new List<Plante>();
 }
