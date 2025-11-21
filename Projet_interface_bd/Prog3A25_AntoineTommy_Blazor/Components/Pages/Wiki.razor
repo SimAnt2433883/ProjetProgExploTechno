@@ -1,0 +1,53 @@
+﻿@page "/Wiki"
+@using Models
+@using Services
+@inject WikiService wikiService
+@rendermode InteractiveServer
+
+<div class="container mt-5">
+    <h1 class="mb-4">Wiki</h1>
+    <div class="row">
+        @foreach (var wiki in wikis)
+        {
+            <div class="col-12 mb-3">
+                <a href="/Wiki/@wiki.NoWiki" class="text-decoration-none text-dark">
+                    <div class="card" style="cursor: pointer;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    @if (!string.IsNullOrEmpty(wiki.ImagePlante))
+                                    {
+                                        <img src="@wiki.ImagePlante" class="img-fluid" alt="@wiki.Info" />
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-light border d-flex align-items-center justify-content-center" style="height: 120px;">
+                                            <span class="text-muted">Image</span>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-md-10">
+                                    <h5 class="card-title">@wiki.Info</h5>
+                                    <p class="card-text text-muted">
+                                        Humidité: @wiki.MinHumidite% - @wiki.MaxHumidite% |
+                                        Température: @wiki.MinTemperature°C - @wiki.MaxTemperature°C |
+                                        Rayons UV: @wiki.MinRayonsUv - @wiki.MaxRayonsUv
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    List<Models.Wiki> wikis = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        wikis = await wikiService.GetWikis();
+    }
+}

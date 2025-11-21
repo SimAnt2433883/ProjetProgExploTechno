@@ -2,9 +2,12 @@
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Authorization
 @using Models
+@using Prog3A25_AntoineTommy_Blazor.Services
 @inject AuthenticationStateProvider AuthStateProvider
+@inject CreationWikiService creationWikiService
+@inject NavigationManager navManager
 
-<AuthorizeView Roles="Administrateur">
+<AuthorizeView Roles="Administrateur" >
     <Authorized>
         <title>Création de wiki</title>
         <div class="d-flex flex-column justify-content-center align-items-center vh-100" style="margin-top: -80px;">
@@ -64,6 +67,7 @@
                         <button type="submit" class="btn btn-primary flex-fill">Créer le wiki</button>
                     </div>
                 </EditForm>
+                @((MarkupString)info)
             </div>
         </div>
     </Authorized>
@@ -74,20 +78,33 @@
 
 @code {
     private CreationWikiModel creationWikiModel = new();
+    string info = "";
 
     private async Task HandleSubmit()
     {
-        // Logique de création du wiki
+        int resultat = await creationWikiService.CreerWiki(creationWikiModel);
+        if (resultat == -1)
+            info = "<p class='alert alert-danger mt-3'>Veuillez remplir tous les champs.</p>";
+        else if (resultat == -2)
+            info = "<p class='alert alert-danger mt-3'>Veuillez fournir des barèmes de données valides.</p>";
+        else if (resultat == -3)
+            info = "<p class='alert alert-danger mt-3'>Veuillez fournir un lien d'image valide.</p>";
+        else
+        {
+            info = "";
+            navManager.NavigateTo("/Wiki/" + resultat);
+        }
     }
 
     private void ResetOnClick()
     {
         creationWikiModel = new();
         StateHasChanged();
+        info = "";
     }
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var authState = await ((CustomAuthenticationStateProvider)AuthStateProvider).GetAuthenticationStateAsync();
     }
 }

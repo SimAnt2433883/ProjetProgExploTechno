@@ -73,3 +73,5 @@ INSERT INTO LikesReponse (noUtilisateur, noReponse) VALUES
 (2, 3),
 (5, 4),
 (4, 5);
+
+SELECT * FROM Wiki
