@@ -16,7 +16,9 @@ BEGIN
 	BEGIN TRY
 		INSERT INTO Utilisateur (nom, email, motPasseHash, administrateur, sel)
 		VALUES (@nom, @email, HASHBYTES('SHA2_512', @motPasse + CAST(@sel AS NVARCHAR(36))), @admin, @sel);
-		SET @reponse = SCOPE_IDENTITY();
+		SELECT @reponse = NoUtilisateur
+        FROM Utilisateur
+        WHERE Email = @email;
 	END TRY
 	BEGIN CATCH
 	-- Penser à changer @reponse par un INT qui retourne -1 et ensuite afficher le message d'erreur dans le code.
@@ -33,3 +35,5 @@ EXEC Inscription
 	@admin = 0,
 	@reponse = @reponse OUTPUT;
 PRINT @reponse;
+
+SELECT * FROM Utilisateur;

@@ -23,16 +23,5 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
 
             return wikiRetour;
         }
-
-        public async Task<bool> EstValide(int id)
-        {
-            var db = await factory.CreateDbContextAsync();
-
-            List<Wiki> wikis =
-                [.. from wiki in db.Wikis
-                    select wiki];
-
-            return id > 0 && id <= wikis.Count;
-        }
     }
 }

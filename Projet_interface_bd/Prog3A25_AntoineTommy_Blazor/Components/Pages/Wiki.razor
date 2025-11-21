@@ -17,7 +17,7 @@
                                 <div class="col-md-2">
                                     @if (!string.IsNullOrEmpty(wiki.ImagePlante))
                                     {
-                                        <img src="@wiki.ImagePlante" class="img-fluid" alt="@wiki.Info" />
+                                        <img src="@wiki.ImagePlante" class="img-fluid" alt="@wiki.Nom" />
                                     }
                                     else
                                     {
@@ -27,11 +27,9 @@
                                     }
                                 </div>
                                 <div class="col-md-10">
-                                    <h5 class="card-title">@wiki.Info</h5>
+                                    <h5 class="card-title">@wiki.Nom</h5>
                                     <p class="card-text text-muted">
-                                        Humidité: @wiki.MinHumidite% - @wiki.MaxHumidite% |
-                                        Température: @wiki.MinTemperature°C - @wiki.MaxTemperature°C |
-                                        Rayons UV: @wiki.MinRayonsUv - @wiki.MaxRayonsUv
+                                        @wiki.Info
                                     </p>
                                 </div>
                             </div>
