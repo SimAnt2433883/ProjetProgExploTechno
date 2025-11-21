@@ -22,11 +22,13 @@ namespace Prog3A25_AntoineTommy_Blazor
                 x => x.UseSqlServer(conStrBuilder.ConnectionString));
 
             builder.Services.AddScoped<InscriptionService>();
+            builder.Services.AddScoped<CreationWikiService>();
             builder.Services.AddScoped<LoginService>();
+            builder.Services.AddScoped<WikiSousPageService>();
+            builder.Services.AddScoped<WikiService>();
             builder.Services.AddScoped<ProtectedSessionStorage>();
             builder.Services.AddScoped<CustomAuthenticationStateProvider>();
-            builder.Services.AddScoped<AuthenticationStateProvider>(provider =>
-                provider.GetRequiredService<CustomAuthenticationStateProvider>());
+            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddCascadingAuthenticationState();
 

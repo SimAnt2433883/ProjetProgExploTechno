@@ -14,7 +14,7 @@ public partial class Wiki
     public int NoWiki { get; set; }
 
     [Column("imagePlante")]
-    [StringLength(100)]
+    [StringLength(1000)]
     [Unicode(false)]
     public string? ImagePlante { get; set; }
 

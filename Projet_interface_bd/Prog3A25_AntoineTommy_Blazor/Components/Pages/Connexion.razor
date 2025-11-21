@@ -1,8 +1,9 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 @inject LoginService loginService
-@inject CustomAuthenticationStateProvider authProvider
+@inject AuthenticationStateProvider authProvider
 @inject NavigationManager navManager
+@using Microsoft.AspNetCore.Components.Authorization
 @using Prog3A25_AntoineTommy_Blazor.Authentication
 @using Models
 @using Services
@@ -13,8 +14,8 @@
     <h1 class="mb-4">Connexion</h1>
     <div class="card shadow p-4" style="min-width: 400px;">
         <EditForm Model="@loginData" OnValidSubmit="HandleSubmit" FormName="ConnexionForm">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
 
             <div class="mb-3">
                 <label for="email" class="form-label">Adresse email</label>
@@ -40,13 +41,11 @@
 
     private async Task HandleSubmit()
     {
-        var utilisateur = await loginService.ConnecterUtilisateur(loginData.Email, loginData.MotPasse);
-
+        var utilisateur = await loginService.ConnecterUtilisateur(loginData);
 
         if (utilisateur != null)
         {
-            // string role = loginService.GetRole(utilisateur.NoPlante, utilisateur.Administrateur);
-            await authProvider.UpdateAuthenticationState(new UserSession(
+            await ((CustomAuthenticationStateProvider)authProvider).UpdateAuthenticationState(new UserSession(
                 utilisateur.Nom,
                 utilisateur.Administrateur ? "Administrateur" : "Normal",
                 utilisateur.NoUtilisateur,
