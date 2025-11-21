@@ -4,9 +4,9 @@ using Prog3A25_AntoineTommy_Blazor.Models;
 
 namespace Prog3A25_AntoineTommy_Blazor.Services
 {
-    public class WikiSousPageService(IDbContextFactory<Prog3A25AntoineTommyProdContext> factory)
+    public class WikiSousPageService(IDbContextFactory<Prog3A25AntoineTommyContext> factory)
     {
-        private readonly IDbContextFactory<Prog3A25AntoineTommyProdContext> factory = factory;
+        private readonly IDbContextFactory<Prog3A25AntoineTommyContext> factory = factory;
 
         public async Task<Wiki> GetWiki(int noWiki)
         {

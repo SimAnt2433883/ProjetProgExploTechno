@@ -76,4 +76,4 @@ INSERT INTO LikesReponse (noUtilisateur, noReponse) VALUES
 
 SELECT * FROM Wiki
 
-ALTER TABLE Wiki ADD Nom VARCHAR(100)
+ALTER TABLE Wiki ADD Nom VARCHAR(100);

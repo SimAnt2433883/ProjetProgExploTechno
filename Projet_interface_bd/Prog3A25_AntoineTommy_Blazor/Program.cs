@@ -18,7 +18,7 @@ namespace Prog3A25_AntoineTommy_Blazor
                 {
                     Password = builder.Configuration["MotPasse"]
                 };
-            builder.Services.AddPooledDbContextFactory<Prog3A25AntoineTommyProdContext>(
+            builder.Services.AddPooledDbContextFactory<Prog3A25AntoineTommyContext>(
                 x => x.UseSqlServer(conStrBuilder.ConnectionString));
 
             builder.Services.AddScoped<InscriptionService>();

@@ -5,9 +5,9 @@ using System.Net;
 
 namespace Prog3A25_AntoineTommy_Blazor.Services
 {
-    public class WikiService(IDbContextFactory<Prog3A25AntoineTommyProdContext> factory)
+    public class WikiService(IDbContextFactory<Prog3A25AntoineTommyContext> factory)
     {
-        private readonly IDbContextFactory<Prog3A25AntoineTommyProdContext> factory = factory;
+        private readonly IDbContextFactory<Prog3A25AntoineTommyContext> factory = factory;
 
         public async Task<List<Wiki>> GetWikis()
         {
