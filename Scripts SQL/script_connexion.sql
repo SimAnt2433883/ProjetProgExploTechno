@@ -58,6 +58,9 @@ BEGIN
 END;
 GO
 
+DELETE FROM Donnee
+WHERE noDonnee > 12;
+
 DECLARE @reponse INT;
 EXEC Connexion 
 	@email = 'admin@example.com', 

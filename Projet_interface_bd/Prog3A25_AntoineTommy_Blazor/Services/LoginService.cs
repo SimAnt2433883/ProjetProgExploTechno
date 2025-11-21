@@ -11,9 +11,9 @@ using System.Data;
 
 namespace Prog3A25_AntoineTommy_Blazor.Services
 {
-    public class LoginService(IDbContextFactory<Prog3A25AntoineTommyProdContext> factory)
+    public class LoginService(IDbContextFactory<Prog3A25AntoineTommyContext> factory)
     {
-        private readonly IDbContextFactory<Prog3A25AntoineTommyProdContext> factory = factory;
+        private readonly IDbContextFactory<Prog3A25AntoineTommyContext> factory = factory;
 
         public async Task<Utilisateur?> ConnecterUtilisateur(LoginModel loginData)
         {
@@ -22,7 +22,7 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
             return GetUtilisateur(db, noUtilisateur);
         }
 
-        private static async Task<int?> ExecuterConnexion(Prog3A25AntoineTommyProdContext db, string email, string motPasse)
+        private static async Task<int?> ExecuterConnexion(Prog3A25AntoineTommyContext db, string email, string motPasse)
         {
             var emailParam = new SqlParameter("@email", email);
             var mdpParam = new SqlParameter("@mdp", motPasse);
@@ -40,7 +40,7 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
         }
 
 
-        private static Utilisateur? GetUtilisateur(Prog3A25AntoineTommyProdContext db, int? noUtilisateur)
+        private static Utilisateur? GetUtilisateur(Prog3A25AntoineTommyContext db, int? noUtilisateur)
         {
             List<Utilisateur> utilisateurs =
                 [.. from utilisateur in db.Utilisateurs

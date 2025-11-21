@@ -9,9 +9,9 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
 {
     public class InscriptionService
     {
-        private readonly IDbContextFactory<Prog3A25AntoineTommyProdContext> _factory;
+        private readonly IDbContextFactory<Prog3A25AntoineTommyContext> _factory;
 
-        public InscriptionService(IDbContextFactory<Prog3A25AntoineTommyProdContext> factory)
+        public InscriptionService(IDbContextFactory<Prog3A25AntoineTommyContext> factory)
         {
             _factory = factory;
         }
