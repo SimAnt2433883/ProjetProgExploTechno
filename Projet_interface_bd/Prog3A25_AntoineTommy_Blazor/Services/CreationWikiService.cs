@@ -11,7 +11,8 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
         public async Task<int> CreerWiki(CreationWikiModel creationWikiModel)
         {
             if (creationWikiModel.Description == "" ||
-                creationWikiModel.LienImage == "")
+                creationWikiModel.LienImage == "" ||
+                creationWikiModel.Nom == "")
             {
                 return -1;
             }
@@ -36,6 +37,7 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
 
             Wiki wiki = new Wiki()
             {
+                Nom = creationWikiModel.Nom,
                 Info = creationWikiModel.Description,
                 MinHumidite = creationWikiModel.HumiditeMin,
                 MaxHumidite = creationWikiModel.HumiditeMax,
