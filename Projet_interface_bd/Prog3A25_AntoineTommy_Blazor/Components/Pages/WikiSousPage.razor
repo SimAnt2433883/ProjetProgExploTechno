@@ -1,0 +1,78 @@
+﻿@page "/Wiki/{id:int}"
+@using Prog3A25_AntoineTommy_Blazor.Models
+@using Prog3A25_AntoineTommy_Blazor.Services
+@inject WikiSousPageService wikiSousPageService
+@inject NavigationManager navManager
+@rendermode InteractiveServer
+
+<div style="min-height: 100vh; background-color: #f8f9fa; padding: 20px;">
+    <div class="container">
+        <!-- Bouton retour -->
+        <div class="mb-4">
+            <a href="/Wiki" class="btn btn-outline-secondary btn-sm">
+                <span class="me-2">←</span> Retour au Wiki
+            </a>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="card shadow-lg border-0 p-4" style="max-width: 950px; margin: 0 auto;">
+            <h1 class="text-center mb-4">
+                @donneesPlante?.Plantes.FirstOrDefault()?.Nom
+            </h1>
+            @if (!string.IsNullOrEmpty(donneesPlante?.ImagePlante))
+            {
+                <div class="row g-4">
+                    <!-- IMAGE + CONDITIONS -->
+                    <div class="col-lg-5">
+                        <div class="rounded overflow-hidden shadow-sm mb-3"
+                             style="aspect-ratio: 3/4; background:#eee;">
+                            <img src="@donneesPlante.ImagePlante"
+                                 class="w-100 h-100"
+                                 style="object-fit: cover;" />
+                        </div>
+                        <div class="p-3 bg-light rounded shadow-sm">
+                            <h5 class="fw-bold mb-3">Conditions idéales</h5>
+                            <p><strong>Température:</strong> @donneesPlante.MinTemperature°C – @donneesPlante.MaxTemperature°C</p>
+                            <p><strong>Rayons UV:</strong> @donneesPlante.MinRayonsUv – @donneesPlante.MaxRayonsUv</p>
+                            <p class="mb-0"><strong>Humidité:</strong> @donneesPlante.MinHumidite% – @donneesPlante.MaxHumidite%</p>
+                        </div>
+                    </div>
+                    <!-- DESCRIPTION -->
+                    <div class="col-lg-7">
+                        <h4 class="fw-bold mb-3">Description</h4>
+                        <p style="line-height: 1.6; font-size:1rem;">
+                            @donneesPlante?.Info
+                        </p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="p-3 bg-light rounded shadow-sm mb-4">
+                    <h5 class="fw-bold mb-3">Conditions idéales</h5>
+                    <p><strong>Température:</strong> @donneesPlante.MinTemperature°C – @donneesPlante.MaxTemperature°C</p>
+                    <p><strong>Rayons UV:</strong> @donneesPlante.MinRayonsUv – @donneesPlante.MaxRayonsUv</p>
+                    <p><strong>Humidité:</strong> @donneesPlante.MinHumidite% – @donneesPlante.MaxHumidite%</p>
+                </div>
+                <h4 class="fw-bold mb-3 mt-4">Description</h4>
+                <p style="line-height: 1.6; font-size:1rem;">
+                    @donneesPlante?.Info
+                </p>
+            }   
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    private Models.Wiki donneesPlante = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!await wikiSousPageService.EstValide(id))
+            navManager.NavigateTo("/Wiki");
+        else
+            donneesPlante = await wikiSousPageService.GetWiki(id);
+    }
+}

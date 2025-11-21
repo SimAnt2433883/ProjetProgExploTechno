@@ -15,13 +15,12 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
     {
         private readonly IDbContextFactory<Prog3A25AntoineTommyProdContext> factory = factory;
 
-        public async Task<Utilisateur?> ConnecterUtilisateur(string email, string motPasse)
+        public async Task<Utilisateur?> ConnecterUtilisateur(LoginModel loginData)
         {
             var db = await factory.CreateDbContextAsync();
-            int? noUtilisateur = await ExecuterConnexion(db, email, motPasse);
+            int? noUtilisateur = await ExecuterConnexion(db, loginData.Email, loginData.MotPasse);
             return GetUtilisateur(db, noUtilisateur);
         }
-
 
         private static async Task<int?> ExecuterConnexion(Prog3A25AntoineTommyProdContext db, string email, string motPasse)
         {
@@ -54,20 +53,5 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
 
             return utilisateurRetour;
         }
-
-        //public static string GetRole(Utilisateur utilisateur)
-        //{
-        //    string role = "";
-
-        //    if (utilisateur.Administrateur)
-        //        role += "Administrateur";
-        //    else
-        //        role += "Normal";
-
-        //    if (utilisateur.NoPlante != null)
-        //        role += " plante";
-
-        //    return role;
-        //}
     }
 }
