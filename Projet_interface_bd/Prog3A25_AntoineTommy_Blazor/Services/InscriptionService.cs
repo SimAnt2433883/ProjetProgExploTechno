@@ -16,7 +16,7 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
             _factory = factory;
         }
 
-        public async Task<Utilisateur> InscrireUtilisateur(string email, string nom, string motPasse)
+        public async Task<Utilisateur> InscrireUtilisateur(string nom, string email, string motPasse)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
                 };
 
                 await db.Database.ExecuteSqlRawAsync(
-                    "EXEC Inscription @nom, @email, @motPasse, @reponse OUTPUT",
+                    "EXEC Inscription @nom, @email, @motPasse, 0, @reponse OUTPUT",
                     nomParam, emailParam, mdpParam, reponseParam
                 );
 

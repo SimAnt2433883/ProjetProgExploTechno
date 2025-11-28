@@ -43,7 +43,7 @@
 
     private async Task HandleSubmit()
     {
-        Utilisateur utilisateur = await inscriptionService.InscrireUtilisateur(inscriptionModel.Email, inscriptionModel.Nom, inscriptionModel.MotPasse);
+        Utilisateur utilisateur = await inscriptionService.InscrireUtilisateur(inscriptionModel.Nom, inscriptionModel.Email, inscriptionModel.MotPasse);
 
         if (utilisateur != null)
         {
@@ -54,7 +54,7 @@
                 utilisateur.NoPlante,
                 utilisateur.Email
             ));
-            navManager.NavigateTo("/CreationWiki");
+            navManager.NavigateTo("/donnee",true);
         }
         else
         {
