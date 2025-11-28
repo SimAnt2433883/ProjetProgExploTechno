@@ -24,6 +24,7 @@ namespace Prog3A25_AntoineTommy_Blazor
             builder.Services.AddScoped<InscriptionService>();
             builder.Services.AddScoped<CreationWikiService>();
             builder.Services.AddScoped<LoginService>();
+            builder.Services.AddScoped<DonneeService>();
             builder.Services.AddScoped<WikiSousPageService>();
             builder.Services.AddScoped<WikiService>();
             builder.Services.AddScoped<ProtectedSessionStorage>();
