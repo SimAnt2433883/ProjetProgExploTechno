@@ -6,8 +6,40 @@
 
 <div class="container mt-5">
     <h1 class="mb-4">Wiki</h1>
+
+    <!-- FILTRES NUMÉRIQUES -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label class="form-label">Température :</label>
+            <InputNumber class="form-control" @bind-Value="wikiFiltre.Temperature" min="-99" max="99" />
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Humidité :</label>
+            <InputNumber class="form-control" @bind-Value="wikiFiltre.Humidite" min="0" max="99" />
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Rayons UV :</label>
+            <InputNumber class="form-control" @bind-Value="wikiFiltre.RayonsUV" min="0" max="99" />
+        </div>
+    </div>
+
+    <!-- BOUTONS FILTRER + RÉINITIALISER -->
+    <div class="d-flex gap-3 mb-4">
+        <button class="btn btn-primary" @onclick="AppliquerFiltre">Filtrer</button>
+        <button class="btn btn-secondary" @onclick="Reinitialiser">Réinitialiser</button>
+    </div>
+
+    <!-- RECHERCHE TEXTE -->
+    <input class="form-control mb-4"
+           placeholder="Rechercher une plante..."
+           value="@rechercheTexte"
+           @oninput="OnRechercheChange" />
+
+    <!-- LISTE DES PLANTES -->
     <div class="row">
-        @foreach (var wiki in wikis)
+        @foreach (var wiki in wikisFiltres)
         {
             <div class="col-12 mb-3">
                 <a href="/Wiki/@wiki.NoWiki" class="text-decoration-none text-dark">
@@ -42,10 +74,42 @@
 </div>
 
 @code {
-    List<Models.Wiki> wikis = [];
+    List<Models.Wiki> wikis = new();
+    List<Models.Wiki> wikisFiltres = new();
+    WikiFiltre wikiFiltre = new();
+    string rechercheTexte = "";
 
     protected override async Task OnInitializedAsync()
     {
-        wikis = await wikiService.GetWikis();
+        wikis = (await wikiService.GetWikis())?.ToList() ?? new();
+        wikisFiltres = wikis;
+    }
+
+    private async Task AppliquerFiltre()
+    {
+        var filtres = await wikiService.Filter(wikiFiltre);
+
+        wikisFiltres = wikiService.Rechercher(filtres, rechercheTexte);
+
+        StateHasChanged();
+    }
+
+    private void OnRechercheChange(ChangeEventArgs e)
+    {
+        rechercheTexte = e.Value?.ToString() ?? "";
+
+        wikisFiltres = wikiService.Rechercher(wikis, rechercheTexte);
+
+        StateHasChanged();
+    }
+
+
+    private void Reinitialiser()
+    {
+        wikiFiltre = new();
+        rechercheTexte = "";
+        wikisFiltres = wikis;
+
+        StateHasChanged();
     }
 }
