@@ -1,8 +1,10 @@
 ﻿@page "/Wiki"
+@using Microsoft.AspNetCore.Components.Authorization
 @using Models
 @using Services
 @inject WikiService wikiService
 @rendermode InteractiveServer
+@inject AuthenticationStateProvider authStateProvider
 
 <div class="container mt-5">
     <h1 class="mb-4">Wiki</h1>
@@ -42,34 +44,58 @@
         @foreach (var wiki in wikisFiltres)
         {
             <div class="col-12 mb-3">
-                <a href="/Wiki/@wiki.NoWiki" class="text-decoration-none text-dark">
-                    <div class="card" style="cursor: pointer;">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    @if (!string.IsNullOrEmpty(wiki.ImagePlante))
-                                    {
-                                        <img src="@wiki.ImagePlante" class="img-fluid" alt="@wiki.Nom" />
-                                    }
-                                    else
-                                    {
-                                        <div class="bg-light border d-flex align-items-center justify-content-center" style="height: 120px;">
-                                            <span class="text-muted">Image</span>
-                                        </div>
-                                    }
+                <div class="card shadow-sm border-0" style="overflow: hidden;">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between">
+                            <a href="/Wiki/@wiki.NoWiki" class="text-decoration-none text-dark flex-grow-1">
+
+                                <div class="row g-3 align-items-center">
+
+                                    <div class="col-md-2">
+                                        @if (!string.IsNullOrEmpty(wiki.ImagePlante))
+                                        {
+                                            <img src="@wiki.ImagePlante"
+                                                 alt="@wiki.Nom"
+                                                 class="img-fluid rounded"
+                                                 style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover;" />
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-light border rounded d-flex align-items-center justify-content-center"
+                                                 style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover;">
+                                                <span class="text-muted small">Image</span>
+                                            </div>
+                                        }
+                                    </div>
+
+
+                                    <div class="col-md-10">
+                                        <h5 class="card-title fw-bold mb-1">@wiki.Nom</h5>
+                                        <p class="card-text text-muted mb-0">
+                                            @Tronquer(wiki.Info, 60)
+                                        </p>
+                                    </div>
+
                                 </div>
-                                <div class="col-md-10">
-                                    <h5 class="card-title">@wiki.Nom</h5>
-                                    <p class="card-text text-muted">
-                                        @wiki.Info
-                                    </p>
-                                </div>
-                            </div>
+                            </a>
+
+                            <AuthorizeView Roles="Administrateur">
+                                <Authorized>
+                                    <div class="ms-3">
+                                        <a href="/EditWiki/@wiki.NoWiki" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                    </div>
+                                </Authorized>
+                            </AuthorizeView>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
         }
+
     </div>
 </div>
 
@@ -81,7 +107,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        wikis = (await wikiService.GetWikis())?.ToList() ?? new();
+        var authState = await ((CustomAuthenticationStateProvider)authStateProvider).GetAuthenticationStateAsync();
+        wikis = await wikiService.GetWikis();
         wikisFiltres = wikis;
     }
 
@@ -101,6 +128,12 @@
         wikisFiltres = wikiService.Rechercher(wikis, rechercheTexte);
 
         StateHasChanged();
+    }
+
+    private string Tronquer(string texte, int max)
+    {
+        if (string.IsNullOrEmpty(texte)) return "";
+        return texte.Length <= max ? texte : texte.Substring(0, max) + "...";
     }
 
 

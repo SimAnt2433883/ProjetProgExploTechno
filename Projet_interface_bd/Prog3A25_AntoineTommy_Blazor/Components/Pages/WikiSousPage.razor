@@ -1,42 +1,66 @@
 ﻿@page "/Wiki/{id:int}"
+@using Microsoft.AspNetCore.Components.Authorization
 @using Prog3A25_AntoineTommy_Blazor.Models
 @using Prog3A25_AntoineTommy_Blazor.Services
 @inject WikiSousPageService wikiSousPageService
 @inject NavigationManager navManager
+@inject AuthenticationStateProvider authStateProvider
 @rendermode InteractiveServer
 
-<div style="min-height: 100vh; background-color: #f8f9fa; padding: 20px;"> @* next next/retour & modification wiki par admin avec component creationWiki*@
-    <div class="container">
-        <!-- Bouton retour -->
-        <div class="mb-4">
-            <a href="/Wiki" class="btn btn-outline-secondary btn-sm">
-                <span class="me-2">←</span> Retour au Wiki
-            </a>
-        </div>
+<div class="d-flex flex-column" style="height: calc(100vh - 75px); background-color: #ffffff; padding: 20px 0;">
+    <div class="container position-relative h-100 d-flex flex-column">
 
-        <!-- Contenu principal -->
-        <div class="card shadow-lg border-0 p-4" style="max-width: 950px; margin: 0 auto;">
-            <h1 class="text-center mb-4">
-                @donneesPlante.Nom
-            </h1>
-            @if (!string.IsNullOrEmpty(donneesPlante?.ImagePlante))
-            {
-                <div class="row g-4">
+        <!-- BOUTON RETOUR en haut à gauche -->
+        <button class="btn btn-outline-secondary mb-3 align-self-start d-flex align-items-center gap-1"
+                @onclick='() => navManager.NavigateTo("/Wiki")'>
+            <i class="bi bi-box-arrow-left"></i>
+            Retour
+        </button>
+
+        <!-- CARD PRINCIPALE centrée verticalement -->
+        <div class="position-relative flex-grow-1 d-flex justify-content-center align-items-center">
+
+            <!-- BOUTON PREVIOUS -->
+            <button class="btn btn-outline-primary rounded-circle position-absolute start-0 top-50 translate-middle-y"
+                    style="width: 42px; height: 42px;"
+                    @onclick="() => ChangerWiki(-1)">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+
+            <!-- CONTENU -->
+            <div class="card shadow-lg border-0 p-4" style="max-width: 950px; width:100%; height: 100%; overflow-y: auto;">
+                <h1 class="text-center mb-4">@donneesPlante?.Nom</h1>
+
+                <div class="row g-4 align-items-start">
+
                     <!-- IMAGE + CONDITIONS -->
                     <div class="col-lg-5">
-                        <div class="rounded overflow-hidden shadow-sm mb-3"
-                             style="aspect-ratio: 3/4; background:#eee;">
-                            <img src="@donneesPlante.ImagePlante"
-                                 class="w-100 h-100"
-                                 style="object-fit: cover;" />
-                        </div>
+                        @if (!string.IsNullOrEmpty(donneesPlante?.ImagePlante))
+                        {
+                            <div class="rounded overflow-hidden shadow-sm mb-3" style="width:100%; aspect-ratio:1/1;">
+                                <img src="@donneesPlante.ImagePlante" class="w-100 h-100" style="object-fit: cover;" />
+                            </div>
+                        }
+
+                        <!-- BOUTON ADMIN -->
+                        <AuthorizeView Roles="Administrateur">
+                            <Authorized>
+                                <a href="/EditWiki/@donneesPlante.NoWiki"
+                                   class="btn btn-primary w-100 mb-3 d-flex justify-content-center align-items-center gap-2">
+                                    <i class="bi bi-pencil-square"></i> Modifier le wiki
+                                </a>
+                            </Authorized>
+                        </AuthorizeView>
+
+                        <!-- CONDITIONS -->
                         <div class="p-3 bg-light rounded shadow-sm">
                             <h5 class="fw-bold mb-3">Conditions idéales</h5>
-                            <p><strong>Température:</strong> @donneesPlante.MinTemperature°C – @donneesPlante.MaxTemperature°C</p>
-                            <p><strong>Rayons UV:</strong> @donneesPlante.MinRayonsUv – @donneesPlante.MaxRayonsUv</p>
-                            <p class="mb-0"><strong>Humidité:</strong> @donneesPlante.MinHumidite% – @donneesPlante.MaxHumidite%</p>
+                            <p><strong>Température:</strong> @donneesPlante?.MinTemperature°C – @donneesPlante?.MaxTemperature°C</p>
+                            <p><strong>Rayons UV:</strong> @donneesPlante?.MinRayonsUv – @donneesPlante?.MaxRayonsUv</p>
+                            <p class="mb-0"><strong>Humidité:</strong> @donneesPlante?.MinHumidite% – @donneesPlante?.MaxHumidite%</p>
                         </div>
                     </div>
+
                     <!-- DESCRIPTION -->
                     <div class="col-lg-7">
                         <h4 class="fw-bold mb-3">Description</h4>
@@ -45,20 +69,14 @@
                         </p>
                     </div>
                 </div>
-            }
-            else
-            {
-                <div class="p-3 bg-light rounded shadow-sm mb-4">
-                    <h5 class="fw-bold mb-3">Conditions idéales</h5>
-                    <p><strong>Température:</strong> @donneesPlante.MinTemperature°C – @donneesPlante.MaxTemperature°C</p>
-                    <p><strong>Rayons UV:</strong> @donneesPlante.MinRayonsUv – @donneesPlante.MaxRayonsUv</p>
-                    <p><strong>Humidité:</strong> @donneesPlante.MinHumidite% – @donneesPlante.MaxHumidite%</p>
-                </div>
-                <h4 class="fw-bold mb-3 mt-4">Description</h4>
-                <p style="line-height: 1.6; font-size:1rem;">
-                    @donneesPlante?.Info
-                </p>
-            }
+            </div>
+
+            <!-- BOUTON NEXT -->
+            <button class="btn btn-outline-primary rounded-circle position-absolute end-0 top-50 translate-middle-y"
+                    style="width: 42px; height: 42px;"
+                    @onclick="() => ChangerWiki(1)">
+                <i class="bi bi-chevron-right"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -66,12 +84,25 @@
 @code {
     [Parameter] public int id { get; set; }
 
-    private Models.Wiki donneesPlante = new();
+    private Models.Wiki? donneesPlante = new();
+    private int maxId = 1;
 
     protected override async Task OnInitializedAsync()
+    {
+        var authState = await ((CustomAuthenticationStateProvider)authStateProvider).GetAuthenticationStateAsync();
+        maxId = await wikiSousPageService.GetMaxId();
+    }
+
+    protected override async Task OnParametersSetAsync()
     {
         donneesPlante = await wikiSousPageService.GetWiki(id);
         if (donneesPlante == null)
             navManager.NavigateTo("/Wiki");
+    }
+
+    private async Task ChangerWiki(int ajout)
+    {
+        int idWikiDestination = await wikiSousPageService.AllerAuWiki(id, ajout, maxId);
+        navManager.NavigateTo($"/Wiki/{idWikiDestination}", false);
     }
 }
