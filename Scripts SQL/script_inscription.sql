@@ -30,7 +30,7 @@ GO
 DECLARE @reponse NVARCHAR(50);
 EXEC Inscription
 	@nom = 'Tommy',
-	@email = 'test2@test.ca',
+	@email = 'test17@test.ca',
 	@motPasse = 'cegep',
 	@admin = 0,
 	@reponse = @reponse OUTPUT;

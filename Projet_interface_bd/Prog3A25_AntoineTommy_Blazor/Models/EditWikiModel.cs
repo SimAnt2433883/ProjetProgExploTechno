@@ -1,6 +1,6 @@
 ﻿namespace Prog3A25_AntoineTommy_Blazor.Models
 {
-    public class CreationWikiModel
+    public class EditWikiModel
     {
         public string Nom { get; set; } = "";
         public string LienImage { get; set; } = "";

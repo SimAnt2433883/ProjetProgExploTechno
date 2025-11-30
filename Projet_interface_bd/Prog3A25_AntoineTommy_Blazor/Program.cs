@@ -22,8 +22,9 @@ namespace Prog3A25_AntoineTommy_Blazor
                 x => x.UseSqlServer(conStrBuilder.ConnectionString));
 
             builder.Services.AddScoped<InscriptionService>();
-            builder.Services.AddScoped<CreationWikiService>();
+            builder.Services.AddScoped<EditWikiService>();
             builder.Services.AddScoped<LoginService>();
+            builder.Services.AddScoped<DonneeService>();
             builder.Services.AddScoped<WikiSousPageService>();
             builder.Services.AddScoped<WikiService>();
             builder.Services.AddScoped<ProtectedSessionStorage>();

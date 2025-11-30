@@ -1,13 +1,15 @@
-﻿@page "/CreationWiki"
+﻿@page "/EditWiki/{id:int}"
+
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Authorization
 @using Models
 @using Prog3A25_AntoineTommy_Blazor.Services
 @inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager navManager;
 
 <AuthorizeView Roles="Administrateur">
     <Authorized>
-        <EditWikiComponent ></EditWikiComponent>
+        <EditWikiComponent id="id"></EditWikiComponent>
     </Authorized>
     <NotAuthorized>
         <p>Désolé, vous n'avez pas accès à cette page.</p>
@@ -15,8 +17,12 @@
 </AuthorizeView>
 
 @code {
+    [Parameter] public int id { get; set; }
     protected override async Task OnInitializedAsync()
     {
+        if (id == 0)
+            navManager.NavigateTo("/Wiki");
+
         var authState = await ((CustomAuthenticationStateProvider)AuthStateProvider).GetAuthenticationStateAsync();
     }
 }

@@ -5,7 +5,7 @@
 @inject NavigationManager navManager
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">Prog3A25_AntoineTommy_Blazor</a>
+        <a class="navbar-brand" href="">Projet Plantes</a>
     </div>
 </div>
 
@@ -66,6 +66,18 @@
                 <span>Wiki</span>
             </NavLink>
         </div>
+
+        @* ==== Données (quand connecté) ==== *@
+        <AuthorizeView Roles="Normal">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link d-flex align-items-center gap-2" href="donnee">
+                        <i class="bi bi-list fs-4" style="position: relative; top: -13px;"></i>
+                        <span>Données</span>
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
     </nav>
 </div>
 
