@@ -4,7 +4,7 @@ using Prog3A25_AntoineTommy_Blazor.Models;
 
 namespace Prog3A25_AntoineTommy_Blazor.Services
 {
-    public class WikiSousPageService(IDbContextFactory<Prog3A25AntoineTommyContext> factory)
+    public class WikiPlanteService(IDbContextFactory<Prog3A25AntoineTommyContext> factory)
     {
         private readonly IDbContextFactory<Prog3A25AntoineTommyContext> factory = factory;
 

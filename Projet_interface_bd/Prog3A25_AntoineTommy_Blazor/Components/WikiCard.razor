@@ -1,0 +1,65 @@
+@using Microsoft.AspNetCore.Components.Authorization
+@using Models
+@using Services
+
+<div class="col-12 mb-3">
+    <div class="card shadow-sm border-0" style="overflow: hidden;">
+
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between">
+                <a href="/Wiki/Plante/@wiki.NoWiki" class="text-decoration-none text-dark flex-grow-1">
+
+                    <div class="row g-3 align-items-center">
+
+                        <div class="col-md-2">
+                            @if (!string.IsNullOrEmpty(wiki.ImagePlante))
+                            {
+                                <img src="@wiki.ImagePlante"
+                                     alt="@wiki.Nom"
+                                     class="img-fluid rounded"
+                                     style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <div class="bg-light border rounded d-flex align-items-center justify-content-center"
+                                     style="width: 100%; aspect-ratio: 1 / 1;">
+                                    <span class="text-muted small">Image</span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="col-md-10">
+                            <h5 class="card-title fw-bold mb-1">@wiki.Nom</h5>
+                            <p class="card-text text-muted mb-0">
+                                @Tronquer(wiki.Info, 60)
+                            </p>
+                        </div>
+
+                    </div>
+                </a>
+
+                <AuthorizeView Roles="Administrateur">
+                    <Authorized>
+                        <div class="ms-3">
+                            <a href="/EditWiki/@wiki.NoWiki" class="btn btn-primary btn-sm">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                        </div>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter] public Models.Wiki wiki { get; set; } = new();
+    [Parameter] public string role { get; set; } = "";
+
+    private string Tronquer(string texte, int max)
+    {
+        if (string.IsNullOrEmpty(texte)) return "";
+        return texte.Length <= max ? texte : texte[..max] + "...";
+    }
+}

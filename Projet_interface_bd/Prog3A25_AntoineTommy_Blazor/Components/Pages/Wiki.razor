@@ -3,146 +3,167 @@
 @using Models
 @using Services
 @inject WikiService wikiService
-@rendermode InteractiveServer
 @inject AuthenticationStateProvider authStateProvider
+@rendermode InteractiveServer
 
 <div class="container mt-5">
     <h1 class="mb-4">Wiki</h1>
 
-    <!-- FILTRES NUMÉRIQUES -->
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <label class="form-label">Température :</label>
-            <InputNumber class="form-control" @bind-Value="wikiFiltre.Temperature" min="-99" max="99" />
-        </div>
+    <!-- SECTION RECHERCHE + RÉINITIALISER -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
 
-        <div class="col-md-4">
-            <label class="form-label">Humidité :</label>
-            <InputNumber class="form-control" @bind-Value="wikiFiltre.Humidite" min="0" max="99" />
-        </div>
+            <div class="row g-3 align-items-end">
 
-        <div class="col-md-4">
-            <label class="form-label">Rayons UV :</label>
-            <InputNumber class="form-control" @bind-Value="wikiFiltre.RayonsUV" min="0" max="99" />
+                <!-- Recherche texte -->
+                <div class="col-md-8">
+                    <label class="form-label fw-bold">Rechercher une plante :</label>
+                    <input class="form-control"
+                           placeholder="Nom, description..."
+                           value="@rechercheTexte"
+                           @oninput="OnRechercheChange" />
+                </div>
+
+                <!-- Bouton Réinitialiser -->
+                <div class="col-md-4 mt-4 mt-md-0">
+                    <button class="btn btn-secondary w-100" @onclick="Reinitialiser">
+                        Réinitialiser tout
+                    </button>
+                </div>
+
+            </div>
         </div>
     </div>
 
-    <!-- BOUTONS FILTRER + RÉINITIALISER -->
-    <div class="d-flex gap-3 mb-4">
-        <button class="btn btn-primary" @onclick="AppliquerFiltre">Filtrer</button>
-        <button class="btn btn-secondary" @onclick="Reinitialiser">Réinitialiser</button>
+    <!-- SECTION FILTRES + BOUTON FILTRER -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <h5 class="fw-bold mb-3">Filtres avancés</h5>
+
+            <div class="row g-3">
+
+                <!-- Température -->
+                <div class="col-md-4">
+                    <label class="form-label">Température (°C)</label>
+                    <InputNumber class="form-control"
+                                 @bind-Value="filtreWiki.Temperature"
+                                 min="-99" max="99" />
+                </div>
+
+                <!-- Humidité -->
+                <div class="col-md-4">
+                    <label class="form-label">Humidité (%)</label>
+                    <InputNumber class="form-control"
+                                 @bind-Value="filtreWiki.Humidite"
+                                 min="0" max="99" />
+                </div>
+
+                <!-- Rayons UV -->
+                <div class="col-md-4">
+                    <label class="form-label">Rayons UV</label>
+                    <InputNumber class="form-control"
+                                 @bind-Value="filtreWiki.RayonsUV"
+                                 min="0" max="99" />
+                </div>
+
+                <!-- Bouton Filtrer -->
+                <div class="col-12 d-flex justify-content-start mt-2">
+                    <button class="btn btn-primary" @onclick="AppliquerFiltre">
+                        Filtrer
+                    </button>
+                </div>
+
+            </div>
+        </div>
     </div>
 
-    <!-- RECHERCHE TEXTE -->
-    <input class="form-control mb-4"
-           placeholder="Rechercher une plante..."
-           value="@rechercheTexte"
-           @oninput="OnRechercheChange" />
+    <!-- PAGINATION -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button class="btn btn-outline-primary" @onclick="() => ChangePage(-1)">Précédent</button>
+        <span class="fw-bold">Page @pageModel.IndexPage / @pageModel.PagesTotales</span>
+        <button class="btn btn-outline-primary" @onclick="() => ChangePage(1)">Suivant</button>
+    </div>
 
     <!-- LISTE DES PLANTES -->
     <div class="row">
-        @foreach (var wiki in wikisFiltres)
+        @foreach (var wiki in wikisPage)
         {
-            <div class="col-12 mb-3">
-                <div class="card shadow-sm border-0" style="overflow: hidden;">
-
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-between">
-                            <a href="/Wiki/@wiki.NoWiki" class="text-decoration-none text-dark flex-grow-1">
-
-                                <div class="row g-3 align-items-center">
-
-                                    <div class="col-md-2">
-                                        @if (!string.IsNullOrEmpty(wiki.ImagePlante))
-                                        {
-                                            <img src="@wiki.ImagePlante"
-                                                 alt="@wiki.Nom"
-                                                 class="img-fluid rounded"
-                                                 style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover;" />
-                                        }
-                                        else
-                                        {
-                                            <div class="bg-light border rounded d-flex align-items-center justify-content-center"
-                                                 style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover;">
-                                                <span class="text-muted small">Image</span>
-                                            </div>
-                                        }
-                                    </div>
-
-
-                                    <div class="col-md-10">
-                                        <h5 class="card-title fw-bold mb-1">@wiki.Nom</h5>
-                                        <p class="card-text text-muted mb-0">
-                                            @Tronquer(wiki.Info, 60)
-                                        </p>
-                                    </div>
-
-                                </div>
-                            </a>
-
-                            <AuthorizeView Roles="Administrateur">
-                                <Authorized>
-                                    <div class="ms-3">
-                                        <a href="/EditWiki/@wiki.NoWiki" class="btn btn-primary btn-sm">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                    </div>
-                                </Authorized>
-                            </AuthorizeView>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <WikiCard wiki="@wiki" role="@role" />
         }
-
     </div>
 </div>
 
+
 @code {
-    List<Models.Wiki> wikis = new();
-    List<Models.Wiki> wikisFiltres = new();
-    WikiFiltre wikiFiltre = new();
-    string rechercheTexte = "";
+    List<Models.Wiki> wikis = new(); // Liste de tous les wikis 
+    List<Models.Wiki> wikisFiltres = new(); // Liste des wikis filtrés 
+    List<Models.Wiki> wikisPage = new(); // Liste des wikis dans la page actuelle 
+
+    FiltreWiki filtreWiki = new(); // Modèle avec les données de filtrage 
+    string rechercheTexte = ""; // Texte dans la barre de recherche 
+
+    string role = ""; // Role du user 
+
+    PageModel pageModel = new() // Pour la pagination
+    {
+        IndexPage = 1,
+        TaillePage = 5,
+        PagesTotales = 1
+    };
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await ((CustomAuthenticationStateProvider)authStateProvider).GetAuthenticationStateAsync();
+        role = await wikiService.GetRole(authStateProvider);
         wikis = await wikiService.GetWikis();
         wikisFiltres = wikis;
-    }
 
-    private async Task AppliquerFiltre()
-    {
-        var filtres = await wikiService.Filter(wikiFiltre);
-
-        wikisFiltres = wikiService.Rechercher(filtres, rechercheTexte);
-
-        StateHasChanged();
+        UpdatePage();
     }
 
     private void OnRechercheChange(ChangeEventArgs e)
     {
         rechercheTexte = e.Value?.ToString() ?? "";
-
         wikisFiltres = wikiService.Rechercher(wikis, rechercheTexte);
+        pageModel.IndexPage = 1;
 
-        StateHasChanged();
+        UpdatePage();
     }
 
-    private string Tronquer(string texte, int max)
+    private async Task AppliquerFiltre()
     {
-        if (string.IsNullOrEmpty(texte)) return "";
-        return texte.Length <= max ? texte : texte.Substring(0, max) + "...";
-    }
+        List<Models.Wiki> filtres = await wikiService.GetWikisFiltres(filtreWiki);
+        wikisFiltres = wikiService.Rechercher(filtres, rechercheTexte);
 
+        pageModel.IndexPage = 1;
+        UpdatePage();
+    }
 
     private void Reinitialiser()
     {
-        wikiFiltre = new();
+        filtreWiki = new();
         rechercheTexte = "";
         wikisFiltres = wikis;
 
+        pageModel.IndexPage = 1;
+        UpdatePage();
+    }
+
+    private void UpdatePage()
+    {
+        pageModel.PagesTotales = wikiService.GetNbPages(wikisFiltres, pageModel);
+        pageModel.IndexPage = wikiService.CheckPage(pageModel);
+        
+        wikisPage = wikiService.FiltrerWikis(pageModel, wikisFiltres);
+
         StateHasChanged();
+    }
+
+
+    private void ChangePage(int changement)
+    {
+        pageModel.IndexPage = wikiService.UpdateIndexPage(changement, pageModel.PagesTotales, pageModel.IndexPage);
+
+        UpdatePage();
     }
 }
