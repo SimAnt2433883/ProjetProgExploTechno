@@ -1,8 +1,8 @@
-﻿@page "/Wiki/{id:int}"
+﻿@page "/Wiki/Plante/{id:int}"
 @using Microsoft.AspNetCore.Components.Authorization
 @using Prog3A25_AntoineTommy_Blazor.Models
 @using Prog3A25_AntoineTommy_Blazor.Services
-@inject WikiSousPageService wikiSousPageService
+@inject WikiPlanteService wikiSousPageService
 @inject NavigationManager navManager
 @inject AuthenticationStateProvider authStateProvider
 @rendermode InteractiveServer
@@ -103,6 +103,6 @@
     private async Task ChangerWiki(int ajout)
     {
         int idWikiDestination = await wikiSousPageService.AllerAuWiki(id, ajout, maxId);
-        navManager.NavigateTo($"/Wiki/{idWikiDestination}", false);
+        navManager.NavigateTo($"/Wiki/Plante/{idWikiDestination}", false);
     }
 }

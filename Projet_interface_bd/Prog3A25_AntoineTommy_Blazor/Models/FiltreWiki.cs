@@ -1,6 +1,6 @@
 ﻿namespace Prog3A25_AntoineTommy_Blazor.Models
 {
-    public class WikiFiltre
+    public class FiltreWiki
     {
         public int Temperature { get; set; }
         public int Humidite { get; set; }

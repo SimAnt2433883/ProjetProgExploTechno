@@ -38,7 +38,6 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
                 return -7;
             else
                 return 0;
-
         }
 
         public async Task<int> CreerWiki(EditWikiModel editWikiModel)
@@ -49,7 +48,7 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
 
             var db = await factory.CreateDbContextAsync();
 
-            Wiki wiki = new Wiki()
+            Wiki wiki = new()
             {
                 Nom = editWikiModel.Nom,
                 Info = editWikiModel.Description,
@@ -95,7 +94,6 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
 
             return wiki.NoWiki;
         }
-
 
         private static bool IsUrl(string? input)
         {
