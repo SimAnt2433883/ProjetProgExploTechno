@@ -1,17 +1,16 @@
-@using Microsoft.AspNetCore.Components.Authorization
+﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Models
 @using Services
 
 <div class="col-12 mb-3">
     <div class="card shadow-sm border-0" style="overflow: hidden;">
-
         <div class="card-body">
 
             <div class="d-flex justify-content-between">
                 <a href="/Wiki/Plante/@wiki.NoWiki" class="text-decoration-none text-dark flex-grow-1">
-
                     <div class="row g-3 align-items-center">
 
+                        <!-- Image -->
                         <div class="col-md-2">
                             @if (!string.IsNullOrEmpty(wiki.ImagePlante))
                             {
@@ -29,16 +28,24 @@
                             }
                         </div>
 
+                        <!-- Contenu -->
                         <div class="col-md-10">
                             <h5 class="card-title fw-bold mb-1">@wiki.Nom</h5>
-                            <p class="card-text text-muted mb-0">
+                            <p class="card-text text-muted mb-2">
                                 @Tronquer(wiki.Info, 60)
                             </p>
-                        </div>
 
+                            <!-- Barèmes -->
+                            <div class="d-flex gap-3 flex-wrap small text-muted">
+                                <span>🌡 Température: @wiki.MinTemperature° à @wiki.MaxTemperature°</span>
+                                <span>💧 Humidité: @wiki.MinHumidite% à @wiki.MaxHumidite%</span>
+                                <span>☀ UV: @wiki.MinRayonsUv à @wiki.MaxRayonsUv</span>
+                            </div>
+                        </div>
                     </div>
                 </a>
 
+                <!-- Bouton modifier pour admin -->
                 <AuthorizeView Roles="Administrateur">
                     <Authorized>
                         <div class="ms-3">
@@ -53,7 +60,7 @@
     </div>
 </div>
 
-@code{
+@code {
     [Parameter] public Models.Wiki wiki { get; set; } = new();
     [Parameter] public string role { get; set; } = "";
 

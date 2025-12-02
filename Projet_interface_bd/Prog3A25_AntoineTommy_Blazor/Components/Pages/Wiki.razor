@@ -6,31 +6,22 @@
 @inject AuthenticationStateProvider authStateProvider
 @rendermode InteractiveServer
 
-<div class="container mt-5">
+
+<div class="container mt-5" style="max-width: 900px; margin: auto;">
     <h1 class="mb-4">Wiki</h1>
 
     <!-- SECTION RECHERCHE + RÉINITIALISER -->
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-
             <div class="row g-3 align-items-end">
-
                 <!-- Recherche texte -->
-                <div class="col-md-8">
+                <div class="col-12">
                     <label class="form-label fw-bold">Rechercher une plante :</label>
                     <input class="form-control"
                            placeholder="Nom, description..."
                            value="@rechercheTexte"
                            @oninput="OnRechercheChange" />
                 </div>
-
-                <!-- Bouton Réinitialiser -->
-                <div class="col-md-4 mt-4 mt-md-0">
-                    <button class="btn btn-secondary w-100" @onclick="Reinitialiser">
-                        Réinitialiser tout
-                    </button>
-                </div>
-
             </div>
         </div>
     </div>
@@ -45,7 +36,7 @@
 
                 <!-- Température -->
                 <div class="col-md-4">
-                    <label class="form-label">Température (°C)</label>
+                    <label class="form-label">🌡 Température (°C)</label>
                     <InputNumber class="form-control"
                                  @bind-Value="filtreWiki.Temperature"
                                  min="-99" max="99" />
@@ -53,7 +44,7 @@
 
                 <!-- Humidité -->
                 <div class="col-md-4">
-                    <label class="form-label">Humidité (%)</label>
+                    <label class="form-label">💧 Humidité (%)</label>
                     <InputNumber class="form-control"
                                  @bind-Value="filtreWiki.Humidite"
                                  min="0" max="99" />
@@ -61,16 +52,21 @@
 
                 <!-- Rayons UV -->
                 <div class="col-md-4">
-                    <label class="form-label">Rayons UV</label>
+                    <label class="form-label">☀ UV</label>
                     <InputNumber class="form-control"
                                  @bind-Value="filtreWiki.RayonsUV"
                                  min="0" max="99" />
                 </div>
 
-                <!-- Bouton Filtrer -->
-                <div class="col-12 d-flex justify-content-start mt-2">
+                <div class="col-12 d-flex justify-content-between mt-2">
+                    <!-- Bouton Filtrer à gauche -->
                     <button class="btn btn-primary" @onclick="AppliquerFiltre">
                         Filtrer
+                    </button>
+
+                    <!-- Bouton Réinitialiser à droite -->
+                    <button class="btn btn-secondary" @onclick="Reinitialiser">
+                        Réinitialiser tout
                     </button>
                 </div>
 
@@ -93,7 +89,6 @@
         }
     </div>
 </div>
-
 
 @code {
     List<Models.Wiki> wikis = new(); // Liste de tous les wikis 
