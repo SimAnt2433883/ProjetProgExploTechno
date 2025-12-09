@@ -2,6 +2,7 @@
 using Prog3A25_AntoineTommy_Blazor.Data;
 using Prog3A25_AntoineTommy_Blazor.Models;
 using System.Net;
+using System.Numerics;
 
 namespace Prog3A25_AntoineTommy_Blazor.Services
 {
@@ -30,6 +31,21 @@ namespace Prog3A25_AntoineTommy_Blazor.Services
                 .Where(d => d.NoPlante == user.NoPlante)
                 .OrderByDescending(d => d.DateHeure)
                 .ToListAsync();
+        }
+
+        public async Task<Wiki?> GetBornesPlante(int noPlante)
+        {
+            await using var db = await _factory.CreateDbContextAsync();
+            // On trouve la plante
+            var plante = await db.Plantes
+                .FirstOrDefaultAsync(p => p.NoPlante == noPlante);
+
+            if (plante == null || plante.NoWiki == null)
+                return null;
+
+            // On récupère les bornes dans Wiki
+            var bornes = from Wiki w in db.Wikis where w.NoWiki == plante.NoWiki select w;
+            return await bornes.FirstOrDefaultAsync();
         }
     }
 }
