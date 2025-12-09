@@ -77,3 +77,5 @@ INSERT INTO LikesReponse (noUtilisateur, noReponse) VALUES
 SELECT * FROM Wiki
 
 ALTER TABLE Wiki ADD Nom VARCHAR(100);
+
+UPDATE Plante SET noWiki = 1 WHERE noPlante = 1;

@@ -1,0 +1,89 @@
+﻿@page "/forum"
+@rendermode InteractiveServer
+@inject NavigationManager navManager
+@inject CustomAuthenticationStateProvider AuthStateProvider
+@inject QuestionService questionService
+@using Microsoft.AspNetCore.Components.Authorization
+@using Prog3A25_AntoineTommy_Blazor.Authentication
+@using Models
+@using Services
+
+<style>
+    .floating-plus {
+        position: fixed;
+        right: 30px;
+        bottom: 30px;
+        padding: 12px 20px;
+        border-radius: 30px;
+        background: #0d6efd;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+        transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+        .floating-plus:hover {
+            transform: scale(1.05);
+            background: #0a58ca;
+        }
+</style>
+
+<title>Forum</title>
+<h1>Forum</h1>
+@if (questions == null)
+{
+    <p>Chargement...</p>
+}
+else if (!questions.Any())
+{
+    <p>Aucune question pour le moment.</p>
+}
+else
+{
+    @foreach (var q in questions)
+    {
+        <div class="col-12 mb-3">
+            <a style="text-decoration:none; color:inherit;">
+                <div class="card" style="cursor: pointer;">
+                    <div class="card-body">
+                        <h3 class="card-title fw-bold">@q.Titre</h3>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <h5>Par @q.NomUtilisateur</h5>
+                                <p class="card-text text-muted">
+                                    @q.Question1
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+}
+<AuthorizeView Roles="Normal">
+    <Authorized>
+        <div class="floating-plus">
+            <span style="font-size:22px; font-weight:bold; margin-right:4px;">+</span>
+            Soumettre une question
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private List<QuestionUtilisateur> questions = new();
+    // noUtilisateur est affiché au lieu de nomUtilisateur
+    protected override async Task OnInitializedAsync()
+    {
+        questions = await questionService.GetQuestionsAsync();
+    }
+}
+

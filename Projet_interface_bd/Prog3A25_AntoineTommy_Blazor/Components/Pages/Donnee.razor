@@ -6,17 +6,31 @@
 @using Models
 @using Services
 
-<PageTitle>Données</PageTitle>
-
+<title>Données</title>
+<style>
+    .alerte {
+        color: red;
+        font-weight: bold;
+    }
+</style>
 <h1>Données</h1>
-
+@if (bornes != null)
+{
+    <h3>Bornes recommandées</h3>
+    <ul>
+        <li>Température : @bornes.MinTemperature°C – @bornes.MaxTemperature°C</li>
+        <li>Humidité : @bornes.MinHumidite% – @bornes.MaxHumidite%</li>
+        <li>Rayons UV : @bornes.MinRayonsUv – @bornes.MaxRayonsUv</li>
+    </ul>
+    <p>Les données seront rouges si elles sont hors des bornes recommandées.</p>
+}
 @if (donnees == null)
 {
     <p><em>Chargement...</em></p>
 }
 else if (!donnees.Any())
 {
-    <p>Aucune donnée trouvée.</p>
+    <p>Aucune donnée trouvée. Aucune plante n'est liée à ce compte.</p>
 }
 else
 {
@@ -34,9 +48,21 @@ else
             {
                 <tr>
                     <td>@d.DateHeure</td>
-                    <td>@d.Temperature</td>
-                    <td>@d.Humidite</td>
-                    <td>@d.RayonsUv</td>
+
+                    <!-- Température -->
+                    <td class="@((d.Temperature < bornes.MinTemperature || d.Temperature > bornes.MaxTemperature) ? "alerte" : "")">
+                        @d.Temperature °C
+                    </td>
+
+                    <!-- Humidité -->
+                    <td class="@((d.Humidite < bornes.MinHumidite || d.Humidite > bornes.MaxHumidite) ? "alerte" : "")">
+                        @d.Humidite %
+                    </td>
+
+                    <!-- UV -->
+                    <td class="@((d.RayonsUv < bornes.MinRayonsUv || d.RayonsUv > bornes.MaxRayonsUv) ? "alerte" : "")">
+                        @d.RayonsUv
+                    </td>
                 </tr>
             }
         </tbody>
@@ -45,18 +71,36 @@ else
 
 @code {
     private List<Models.Donnee> donnees = new();
+    private Models.Wiki? bornes;
     private int noUtilisateur;
 
     protected override async Task OnInitializedAsync()
     {
-        // récupérer l'utilisateur connecté
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
 
-        var noUtilisateurClaim = user.FindFirst("NoUtilisateur");
-        int noUtilisateur = int.Parse(noUtilisateurClaim.Value);
+            int noUtilisateur;
+            if (!int.TryParse(user.FindFirst("NoUtilisateur")?.Value, out noUtilisateur))
+            {
+                donnees = new List<Models.Donnee>();
+                return;
+            }
 
-        // récupérer les données de son noPlante
-        donnees = await donneeService.GetDonneesByUtilisateur(noUtilisateur);
+            int noPlante;
+            if (!int.TryParse(user.FindFirst("NoPlante")?.Value, out noPlante))
+            {
+                donnees = new List<Models.Donnee>();
+                return;
+            }
+
+            donnees = await donneeService.GetDonneesByUtilisateur(noUtilisateur);
+            bornes = await donneeService.GetBornesPlante(noPlante);
+        }
+        catch
+        {
+            donnees = new List<Models.Donnee>();
+        }
     }
 }
