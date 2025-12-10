@@ -20,16 +20,17 @@ BEGIN
 
     OPEN c_Plante;
 
-    FETCH NEXT FROM c_Plante INTO @nomPlante;
+    FETCH c_Plante INTO @nomPlante;
 
     WHILE @@FETCH_STATUS = 0
     BEGIN
         PRINT 'Nouvelle plante insérée : ' + @nomPlante;
 
-        FETCH NEXT FROM c_Plante INTO @nomPlante;
+        FETCH c_Plante INTO @nomPlante;
     END
 
     CLOSE c_Plante;
     DEALLOCATE c_Plante;
+	SET NOCOUNT OFF;
 END;
 GO

@@ -34,6 +34,21 @@
             transform: scale(1.05);
             background: #0a58ca;
         }
+
+    .text-danger {
+        color: red;
+        font-weight: bold;
+    }
+
+
+    .modal-box {
+        padding: 2rem;
+        border-radius: 8px;
+        background-color: white;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+        width: 100%;
+        max-width: 600px;
+    }
 </style>
 
 <title>Forum</title>
@@ -69,21 +84,77 @@ else
         </div>
     }
 }
-<AuthorizeView Roles="Normal">
+<AuthorizeView Roles="Normal, Administrateur">
     <Authorized>
-        <div class="floating-plus">
+        <div class="floating-plus" @onclick="() => showFormQuestion = true">
             <span style="font-size:22px; font-weight:bold; margin-right:4px;">+</span>
             Soumettre une question
         </div>
     </Authorized>
 </AuthorizeView>
 
+@if (showFormQuestion)
+{
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-box">
+                    <h3>Nouvelle question</h3>
+                    <div class="mb-3">
+                        <label class="form-label">Titre</label>
+                        <input class="form-control" @bind="questionUtilisateur.Titre" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Question</label>
+                        <textarea class="form-control" rows="4" @bind="questionUtilisateur.Question1"></textarea>
+                    </div>
+                    @if (informationsManquantes)
+                    {
+                        <div class="text-danger">Informations manquantes</div>
+                    }
+                    <div class="d-flex justify-content-end gap-2">
+                        <button class="btn btn-secondary" @onclick="() => showFormQuestion = false">Annuler</button>
+                        <button class="btn btn-primary" @onclick="SubmitQuestion">Soumettre</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private List<QuestionUtilisateur> questions = new();
-    // noUtilisateur est affiché au lieu de nomUtilisateur
+    private bool showFormQuestion = false;
+
+    private QuestionUtilisateur questionUtilisateur = new();
+
+    private bool informationsManquantes = false;
+
     protected override async Task OnInitializedAsync()
     {
         questions = await questionService.GetQuestionsAsync();
+    }
+
+    private async Task SubmitQuestion()
+    {
+        informationsManquantes = string.IsNullOrWhiteSpace(questionUtilisateur.Titre) || string.IsNullOrWhiteSpace(questionUtilisateur.Question1);
+        if (informationsManquantes) return;
+
+
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        int noUtilisateur = int.Parse(user.FindFirst("noUtilisateur").Value);
+
+        questionUtilisateur.NoUtilisateur = noUtilisateur;
+        var nouvelle = await questionService.AjouterQuestionAsync(questionUtilisateur);
+
+        // Ajouter la question en local pour éviter de recharger toute la liste
+        questions.Insert(0, nouvelle);
+
+        showFormQuestion = false;
+        questionUtilisateur = new();
+        informationsManquantes = false;
     }
 }
 
