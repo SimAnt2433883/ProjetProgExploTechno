@@ -67,6 +67,14 @@
             </NavLink>
         </div>
 
+        @* ==== Forum (tout le monde) ==== *@
+        <div class="nav-item px-3">
+            <NavLink class="nav-link d-flex align-items-center gap-2" href="Forum">
+                <i class="bi bi-chat-left-dots-fill" style="position: relative; top: -13px;"></i>
+                <span>Forum</span>
+            </NavLink>
+        </div>
+
         @* ==== Données (quand connecté) ==== *@
         <AuthorizeView Roles="Normal">
             <Authorized>
