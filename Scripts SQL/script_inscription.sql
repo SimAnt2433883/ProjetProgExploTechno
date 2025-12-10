@@ -1,4 +1,4 @@
-USE Prog3A25_AntoineTommy;
+USE Prog3A25_AntoineTommy_Prod;
 
 IF OBJECT_ID('Inscription', 'p') IS NOT NULL
 	DROP PROCEDURE Inscription;

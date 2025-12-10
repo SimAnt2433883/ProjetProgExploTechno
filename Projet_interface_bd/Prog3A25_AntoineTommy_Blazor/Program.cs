@@ -14,7 +14,7 @@ namespace Prog3A25_AntoineTommy_Blazor
         {
             var builder = WebApplication.CreateBuilder(args);
             var conStrBuilder =
-                new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("Connexion"))
+                new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("Connexion_Prod"))
                 {
                     Password = builder.Configuration["MotPasse"]
                 };
