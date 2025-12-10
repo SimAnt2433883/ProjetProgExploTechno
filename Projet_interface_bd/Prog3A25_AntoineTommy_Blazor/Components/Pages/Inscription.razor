@@ -54,7 +54,10 @@
                 utilisateur.NoPlante,
                 utilisateur.Email
             ));
-            navManager.NavigateTo("/donnee",true);
+            if (utilisateur.NoPlante != null)
+                navManager.NavigateTo("/donnee",true);
+            else
+                navManager.NavigateTo("/wiki", true);
         }
         else
         {
